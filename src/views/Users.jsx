@@ -3,13 +3,20 @@ import userClient from "../clients/userClient";
 import { DataGrid } from "@mui/x-data-grid";
 import { Chip, LinearProgress } from "@mui/material";
 import CustomNoRows from "../components/CustomNoRows";
-import { rolesUser } from "../utils/roles";
+import { rolesCode, rolesUser } from "../utils/roles";
 import moment from "moment/moment";
+import { useStateContext } from "../context/ContextProvider";
+import NotFound from "./NotFound";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const [pageSize, setPageSize] = useState(5);
+  const { user } = useStateContext();
+
+  if (user.role?.toUpperCase() !== rolesCode.MANAGER) {
+    return <NotFound />;
+  }
 
   useEffect(() => {
     setLoadingTable(true);

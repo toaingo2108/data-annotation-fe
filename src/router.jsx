@@ -5,6 +5,8 @@ import NotFound from "./views/NotFound";
 import Users from "./views/Users";
 import Login from "./views/Login";
 import Projects from "./views/Projects";
+import Home from "./views/Home";
+import MyProfile from "./views/MyProfile";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +15,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/users" />,
+        element: <Navigate to="/home" />,
+      },
+      {
+        path: "/home",
+        element: <Home />,
       },
       {
         path: "/users",
@@ -22,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/projects",
         element: <Projects />,
+      },
+      {
+        path: "/my-profile",
+        element: <MyProfile />,
       },
     ],
   },
@@ -37,7 +47,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/*",
-    element: <NotFound />,
+    element: <NotFound>404 NOT FOUND</NotFound>,
   },
 ]);
 

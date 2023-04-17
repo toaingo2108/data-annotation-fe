@@ -20,24 +20,31 @@ import {
 } from "@mui/material";
 import {
   AccountCircle,
-  Inbox,
-  Mail,
+  Home,
   Menu as MenuIcon,
   Person,
+  Work,
 } from "@mui/icons-material";
 import { rolesCode, rolesUser } from "../utils/roles";
 import { useNavigate } from "react-router-dom";
 
 const menu = [
   {
+    title: "Home",
+    url: "/home",
+    icon: <Home />,
+    divider: true,
+  },
+  {
     title: "Projects",
     url: "/projects",
-    icon: <Person />,
+    icon: <Work />,
   },
   {
     title: "Users",
     url: "/users",
     icon: <Person />,
+    forRoles: [rolesCode.MANAGER],
   },
 ];
 
@@ -83,32 +90,23 @@ export default function Header() {
       onKeyDown={toggleMenuDrawer(false)}
     >
       <List>
-        {menu.map((item, index) => (
-          <ListItem
-            key={item.title}
-            disablePadding
-            onClick={() => navigate(item.url)}
-          >
-            <ListItemButton>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      {/* <Divider /> */}
-      {/* <List>
         {menu
-          .filter((item) => item.role.includes(rolesCode.MANAGER))
+          .filter(
+            (item) =>
+              !item.forRoles || item.forRoles.includes(user.role?.toUpperCase())
+          )
           .map((item, index) => (
-            <ListItem key={item.title} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
-              </ListItemButton>
-            </ListItem>
+            <React.Fragment key={item.title}>
+              <ListItem disablePadding onClick={() => navigate(item.url)}>
+                <ListItemButton>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </ListItem>
+              {item.divider && <Divider />}
+            </React.Fragment>
           ))}
-      </List> */}
+      </List>
     </Box>
   );
 
@@ -135,7 +133,7 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
+            Data Annotation
           </Typography>
           {findUserRole && (
             <Chip color={findUserRole?.colorChip} label={findUserRole?.name} />
@@ -167,8 +165,14 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  navigate("/my-profile");
+                }}
+              >
+                My profile
+              </MenuItem>
               <MenuItem className="!text-red-600" onClick={() => onLogout()}>
                 Logout
               </MenuItem>
