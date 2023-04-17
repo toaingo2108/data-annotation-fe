@@ -4,18 +4,27 @@ import { useStateContext } from "../context/ContextProvider";
 import authClient from "../clients/authClient";
 import Header from "./Header";
 import { Container } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 
 export default function DefaultLayout() {
-  const { token, setUser } = useStateContext();
+  const { token, setUser, setToken } = useStateContext();
 
   if (!token) {
     return <Navigate to="/login" />;
   }
 
   useEffect(() => {
-    authClient.getMe().then(({ data: { data } }) => {
-      setUser(data);
-    });
+    authClient
+      .getMe()
+      .then(({ data: { data } }) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        enqueueSnackbar(err.message, { variant: "error" });
+        setToken(null);
+        setUser({});
+      });
   }, []);
 
   return (

@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import authClient from "../clients/authClient";
 import { useStateContext } from "../context/ContextProvider";
+import { enqueueSnackbar } from "notistack";
 
 export default function Login() {
   const emailRef = useRef();
@@ -25,14 +26,14 @@ export default function Login() {
       })
       .catch((err) => {
         const response = err.response;
-        if (response && response.status === 400) {
-          if (response.data.errors) {
-            setErrors(response.data.errors);
-          } else {
-            setErrors({
-              email: [response.data.message],
-            });
-          }
+        if (response && response.status !== 500) {
+          enqueueSnackbar(response.data.error || response.data.message, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar(err.message, {
+            variant: "error",
+          });
         }
       });
   };
