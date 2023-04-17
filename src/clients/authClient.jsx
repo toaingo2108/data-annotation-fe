@@ -8,7 +8,7 @@ class AuthClient {
     return axiosClient.post("/auth/logout");
   }
   getMe() {
-    return axiosClient.get("/user");
+    return axiosClient.get("/me");
   }
 }
 

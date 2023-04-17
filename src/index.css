@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  min-height: 100vh;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   margin: 0;

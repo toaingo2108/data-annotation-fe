@@ -4,6 +4,7 @@ import GuestLayout from "./components/GuestLayout";
 import NotFound from "./views/NotFound";
 import Users from "./views/Users";
 import Login from "./views/Login";
+import Projects from "./views/Projects";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <Users />,
+      },
+      {
+        path: "/projects",
+        element: <Projects />,
       },
     ],
   },
