@@ -14,10 +14,6 @@ export default function Users() {
   const [pageSize, setPageSize] = useState(5);
   const { user } = useStateContext();
 
-  if (user.role?.toUpperCase() !== rolesCode.MANAGER) {
-    return <NotFound />;
-  }
-
   useEffect(() => {
     setLoadingTable(true);
     userClient
@@ -85,6 +81,10 @@ export default function Users() {
     //   },
     // },
   ];
+
+  if (user.role?.toUpperCase() !== rolesCode.MANAGER) {
+    return <NotFound />;
+  }
 
   return (
     <div style={{ height: 500, width: "100%" }}>
