@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import userClient from "../clients/userClient";
 import { DataGrid } from "@mui/x-data-grid";
-import { Chip, LinearProgress } from "@mui/material";
+import { Button, Chip, LinearProgress } from "@mui/material";
 import CustomNoRows from "../components/CustomNoRows";
 import { rolesCode, rolesUser } from "../utils/roles";
 import moment from "moment/moment";
 import { useStateContext } from "../context/ContextProvider";
 import NotFound from "./NotFound";
+import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const [pageSize, setPageSize] = useState(5);
   const { user } = useStateContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoadingTable(true);
@@ -31,7 +34,7 @@ export default function Users() {
     {
       field: "role",
       headerName: "Role",
-      width: 200,
+      width: 160,
       renderCell: ({ row }) => {
         const roleUser = rolesUser?.find(
           (role) => role.name === row.role.toUpperCase()
@@ -87,24 +90,35 @@ export default function Users() {
   }
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
-      <DataGrid
-        components={{
-          NoRowsOverlay: CustomNoRows,
-          NoResultsOverlay: CustomNoRows,
-          LoadingOverlay: LinearProgress,
-        }}
-        loading={loadingTable}
-        rows={users}
-        columns={columnsUsers}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        pageSize={pageSize}
-        pagination
-        rowsPerPageOptions={[5, 10, 20]}
-        disableRowSelectionOnClick
-        editMode="row"
-        // onRowClick={(row) => navigate(`/trainee/detail/${row.id}`)}
-      />
+    <div className="flex flex-col items-end">
+      <Button
+        variant="contained"
+        size="small"
+        className="!mb-4"
+        startIcon={<Add />}
+        onClick={() => navigate("/users/new")}
+      >
+        Create user
+      </Button>
+      <div style={{ height: 500, width: "100%" }}>
+        <DataGrid
+          components={{
+            NoRowsOverlay: CustomNoRows,
+            NoResultsOverlay: CustomNoRows,
+            LoadingOverlay: LinearProgress,
+          }}
+          loading={loadingTable}
+          rows={users}
+          columns={columnsUsers}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          pageSize={pageSize}
+          pagination
+          rowsPerPageOptions={[5, 10, 20]}
+          disableRowSelectionOnClick
+          editMode="row"
+          // onRowClick={(row) => navigate(`/trainee/detail/${row.id}`)}
+        />
+      </div>
     </div>
   );
 }
