@@ -9,6 +9,7 @@ import MyProfile from "./views/MyProfile";
 import UserForm from "./views/UserForm";
 import Projects from "./views/Projects/Projects";
 import ProjectDetail from "./views/Projects/ProjectDetail";
+import ProjectNew from "./views/Projects/ProjectNew";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,11 @@ const router = createBrowserRouter([
         element: <Projects />,
       },
       {
-        path: "/projects/:id",
+        path: "/projects/new",
+        element: <ProjectNew />,
+      },
+      {
+        path: "/projects/detail/:id",
         element: <ProjectDetail />,
       },
       {

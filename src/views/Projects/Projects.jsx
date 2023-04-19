@@ -8,14 +8,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Info } from "@mui/icons-material";
+import { Add, Info } from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
+import { rolesCode } from "../../utils/roles";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
-  const { setLoading } = useStateContext();
+  const { user, setLoading } = useStateContext();
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +33,18 @@ export default function Projects() {
 
   return (
     <div>
-      <Typography variant="h3">Projects</Typography>
+      <div className="flex flex-row justify-between items-baseline">
+        <Typography variant="h3">Projects</Typography>
+        {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => navigate("/projects/new")}
+          >
+            Create Project
+          </Button>
+        )}
+      </div>
       <hr className="my-4" />
 
       <div className="flex flex-row gap-4 items-center">
@@ -65,7 +77,7 @@ export default function Projects() {
                 <IconButton
                   variant="outlined"
                   size="small"
-                  onClick={() => navigate("/projects/" + p.id)}
+                  onClick={() => navigate("/projects/detail/" + p.id)}
                 >
                   <Info color="primary" />
                 </IconButton>
