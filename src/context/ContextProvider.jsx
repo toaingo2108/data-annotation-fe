@@ -5,13 +5,16 @@ export const ACCESS_TOKEN = "ACCESS_TOKEN";
 const StateContext = createContext({
   user: null,
   token: null,
+  c: true,
   setUser: () => {},
   setToken: () => {},
+  setLoading: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [token, _setToken] = useState(localStorage.getItem(ACCESS_TOKEN));
+  const [loading, setLoading] = useState(false);
 
   const setToken = (token) => {
     _setToken(token);
@@ -27,8 +30,10 @@ export const ContextProvider = ({ children }) => {
       value={{
         user,
         token,
+        loading,
         setUser,
         setToken,
+        setLoading,
       }}
     >
       {children}

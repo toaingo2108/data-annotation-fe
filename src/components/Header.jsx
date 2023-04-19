@@ -8,6 +8,7 @@ import {
   Divider,
   Drawer,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemButton,
@@ -53,7 +54,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   // states
-  const { user, setUser, setToken } = useStateContext();
+  const { user, setUser, setToken, loading } = useStateContext();
   const [anchorEl, setAnchorEl] = useState();
   const [openMenuDrawer, setOpenMenuDrawer] = useState(false);
 
@@ -180,6 +181,7 @@ export default function Header() {
           </div>
         </Toolbar>
       </AppBar>
+      {loading && <LinearProgress />}
       <Drawer
         anchor="left"
         open={openMenuDrawer}

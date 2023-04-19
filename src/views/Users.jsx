@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import userClient from "../clients/userClient";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Chip, LinearProgress } from "@mui/material";
+import { Button, Chip, LinearProgress, Typography } from "@mui/material";
 import CustomNoRows from "../components/CustomNoRows";
 import { rolesCode, rolesUser } from "../utils/roles";
 import moment from "moment/moment";
@@ -12,20 +12,19 @@ import { useNavigate } from "react-router-dom";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
-  const [loadingTable, setLoadingTable] = useState(false);
   const [pageSize, setPageSize] = useState(5);
-  const { user } = useStateContext();
+  const { user, setLoading } = useStateContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoadingTable(true);
+    setLoading(true);
     userClient
       .getAllUser()
       .then(({ data: { data } }) => {
         setUsers(data);
       })
       .finally(() => {
-        setLoadingTable(false);
+        setLoading(false);
       });
   }, []);
 
@@ -90,24 +89,25 @@ export default function Users() {
   }
 
   return (
-    <div className="flex flex-col items-end">
-      <Button
-        variant="contained"
-        size="small"
-        className="!mb-4"
-        startIcon={<Add />}
-        onClick={() => navigate("/users/new")}
-      >
-        Create user
-      </Button>
+    <div>
+      <div className="flex flex-row items-baseline justify-between">
+        <Typography variant="h3">Users</Typography>
+        <Button
+          variant="contained"
+          size="small"
+          className="!mb-4"
+          startIcon={<Add />}
+          onClick={() => navigate("/users/new")}
+        >
+          Create user
+        </Button>
+      </div>
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid
           components={{
             NoRowsOverlay: CustomNoRows,
             NoResultsOverlay: CustomNoRows,
-            LoadingOverlay: LinearProgress,
           }}
-          loading={loadingTable}
           rows={users}
           columns={columnsUsers}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

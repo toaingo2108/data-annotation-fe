@@ -4,10 +4,11 @@ import GuestLayout from "./components/GuestLayout";
 import NotFound from "./views/NotFound";
 import Users from "./views/Users";
 import Login from "./views/Login";
-import Projects from "./views/Projects";
 import Home from "./views/Home";
 import MyProfile from "./views/MyProfile";
 import UserForm from "./views/UserForm";
+import Projects from "./views/Projects/Projects";
+import ProjectDetail from "./views/Projects/ProjectDetail";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/projects",
         element: <Projects />,
+      },
+      {
+        path: "/projects/:id",
+        element: <ProjectDetail />,
       },
       {
         path: "/my-profile",
