@@ -12,6 +12,10 @@ class ProjectClient {
   getProjectById(id) {
     return axiosClient.get(`/projects/${id}`);
   }
+
+  createProject(payload) {
+    return axiosClient.post("/projects", payload);
+  }
 }
 
 const projectClient = new ProjectClient();

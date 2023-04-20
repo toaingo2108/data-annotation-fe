@@ -23,8 +23,7 @@ export default function Projects() {
     projectClient
       .getAllProjects({})
       .then(({ data }) => {
-        console.log(data.projects);
-        setProjects(data.projects);
+        setProjects(data.project);
       })
       .finally(() => {
         setLoading(false);
@@ -48,7 +47,7 @@ export default function Projects() {
       <hr className="my-4" />
 
       <div className="flex flex-row gap-4 items-center">
-        {projects.map((p) => (
+        {projects?.map((p) => (
           <div
             key={p.id}
             className="

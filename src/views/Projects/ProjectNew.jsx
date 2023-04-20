@@ -15,6 +15,8 @@ import React, { useState } from "react";
 import NotFound from "../NotFound";
 import { rolesCode } from "../../utils/roles";
 import { useStateContext } from "../../context/ContextProvider";
+import projectClient from "../../clients/projectClient";
+import { enqueueSnackbar } from "notistack";
 
 export default function ProjectNew() {
   const { user } = useStateContext();
@@ -26,9 +28,9 @@ export default function ProjectNew() {
     numberOfTexts: 0,
     textTitles: "",
     hasGeneratedText: false,
-    numberOfGeneratedTexts: null,
-    maximumOfGeneratedTexts: null,
-    generatedTextTitles: null,
+    numberOfGeneratedTexts: 0,
+    maximumOfGeneratedTexts: 0,
+    generatedTextTitles: "",
     maximumPerformer: 0,
     projectTypeId: "",
     labelSets: [],
@@ -36,20 +38,63 @@ export default function ProjectNew() {
   });
 
   const handleChangeProject = (e) => {
-    if (
-      e.target.name === "hasLabelSets" ||
-      e.target.name === "hasEntityRecognition" ||
-      e.target.name === "hasGeneratedText"
-    ) {
-      return setProject({ ...project, [e.target.name]: e.target.checked });
+    const name = e.target.name;
+    let value = e.target.value;
+    switch (name) {
+      case "numberOfTexts":
+      case "numberOfGeneratedTexts":
+      case "maximumOfGeneratedTexts":
+      case "maximumPerformer":
+        if (isNaN(value)) return;
+        if (value === "") {
+          e.target.value = 0;
+        }
+        value = +value;
+        e.target.value = value;
+        break;
+
+      case "hasLabelSets":
+      case "hasEntityRecognition":
+      case "hasGeneratedText":
+        return setProject({ ...project, [name]: e.target.checked });
+      default:
+        break;
     }
 
-    setProject({ ...project, [e.target.name]: e.target.value });
+    setProject({ ...project, [name]: value });
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(project);
+    const payload = project;
+    if (!payload.hasLabelSets) {
+      delete payload.labelSets;
+    }
+    if (!payload.hasEntityRecognition) {
+      delete payload.entities;
+    }
+    if (!payload.hasGeneratedText) {
+      payload.numberOfGeneratedTexts = null;
+      payload.maximumOfGeneratedTexts = null;
+      payload.generatedTextTitles = null;
+    }
+    console.log(payload);
+    projectClient
+      .createProject(payload)
+      .then((data) => {
+        console.log(data);
+        enqueueSnackbar({
+          message: "Created project successfully!",
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar({
+          message: err.response.data.error || err.response.data.message,
+          variant: "error",
+        });
+      });
   };
 
   if (![rolesCode.MANAGER].includes(user.role?.toUpperCase())) {
@@ -91,6 +136,7 @@ export default function ProjectNew() {
               required
               margin="normal"
               fullWidth
+              type="number"
               onChange={handleChangeProject}
             />
             <TextField
@@ -124,7 +170,7 @@ export default function ProjectNew() {
                     {type.name}
                   </MenuItem>
                 ))} */}
-                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
               </Select>
             </FormControl>
             <div className="flex flex-row items-start justify-between">
