@@ -46,12 +46,11 @@ export default function Projects() {
       </div>
       <hr className="my-4" />
 
-      <div className="flex flex-row gap-4 items-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-center">
         {projects?.map((p) => (
           <div
             key={p.id}
             className="
-              w-60 
               shadow-md 
               hover:shadow-lg 
               transition 
@@ -59,9 +58,10 @@ export default function Projects() {
               px-4 
               py-3 
               cursor-pointer
+              overflow-hidden
             "
           >
-            <div className="text-lg">{p.name}</div>
+            <div className="text-lg whitespace-nowrap">{p.name}</div>
             <div
               className="
               text-neutral-700 
