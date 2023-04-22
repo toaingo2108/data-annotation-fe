@@ -11,15 +11,32 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NotFound from "../NotFound";
 import { rolesCode } from "../../utils/roles";
 import { useStateContext } from "../../context/ContextProvider";
 import projectClient from "../../clients/projectClient";
 import { enqueueSnackbar } from "notistack";
+import projectTypeClient from "../../clients/projectTypeClient";
 
 export default function ProjectNew() {
-  const { user } = useStateContext();
+  const { user, setLoading } = useStateContext();
+  const [projectTypes, setProjectTypes] = useState([]);
+
+  useEffect(() => {
+    collectData({});
+  }, []);
+
+  const collectData = () => {
+    setLoading(true);
+    Promise.all([projectTypeClient.getAll()])
+      .then((values) => {
+        setProjectTypes(values[0].data.projectTypes);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const initProject = {
     name: "",
@@ -36,7 +53,7 @@ export default function ProjectNew() {
     projectTypeId: "",
     labelSets: [],
     entities: [],
-  }
+  };
   const [project, setProject] = useState(initProject);
 
   const handleChangeProject = (e) => {
@@ -168,12 +185,11 @@ export default function ProjectNew() {
                 required
                 onChange={handleChangeProject}
               >
-                {/* {projectTypes.map((type) => (
-                  <MenuItem key={type.name} value={type.name}>
+                {projectTypes.map((type) => (
+                  <MenuItem key={`project-type-${type.id}`} value={type.id}>
                     {type.name}
                   </MenuItem>
-                ))} */}
-                <MenuItem value={4}>4</MenuItem>
+                ))}
               </Select>
             </FormControl>
             <div className="flex flex-row items-start justify-between">

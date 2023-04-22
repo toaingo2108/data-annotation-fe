@@ -1,10 +1,10 @@
 import axiosClient from "./axiosClient";
 
 class ProjectClient {
-  getAllProjects({ projectType }) {
+  getAllProjects({ projectTypeId }) {
     return axiosClient.get("/projects", {
       params: {
-        projectType,
+        projectTypeId,
       },
     });
   }
