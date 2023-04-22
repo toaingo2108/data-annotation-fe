@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Add, Info } from "@mui/icons-material";
+import { Add, Edit, Info } from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import { rolesCode } from "../../utils/roles";
@@ -66,7 +66,7 @@ export default function Projects() {
       </div>
       <hr className="my-4" />
 
-      <div className="flex flex-row gap-2 mb-4">
+      <div className="flex flex-row gap-2 mb-4 overflow-auto">
         <Chip
           key="type-all"
           label="All"
@@ -83,7 +83,7 @@ export default function Projects() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
         {projects?.map((p) => (
           <div
             key={p.id}
@@ -108,7 +108,7 @@ export default function Projects() {
               {p.description}
             </div>
             <hr className="my-2" />
-            <div className="">
+            <div className="flex flex-row items-center gap-1">
               <Tooltip placement="bottom" title="Info project">
                 <IconButton
                   variant="outlined"
@@ -118,6 +118,17 @@ export default function Projects() {
                   <Info color="primary" />
                 </IconButton>
               </Tooltip>
+              {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
+                <Tooltip placement="bottom" title="Info project">
+                  <IconButton
+                    variant="outlined"
+                    size="small"
+                    onClick={() => navigate("/projects/edit/" + p.id)}
+                  >
+                    <Edit color="default" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </div>
           </div>
         ))}

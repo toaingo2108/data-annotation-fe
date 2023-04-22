@@ -18,8 +18,10 @@ import { useStateContext } from "../../context/ContextProvider";
 import projectClient from "../../clients/projectClient";
 import { enqueueSnackbar } from "notistack";
 import projectTypeClient from "../../clients/projectTypeClient";
+import { useParams } from "react-router-dom";
 
-export default function ProjectNew() {
+export default function ProjectForm() {
+  const { id } = useParams();
   const { user, setLoading } = useStateContext();
   const [projectTypes, setProjectTypes] = useState([]);
 
@@ -29,9 +31,22 @@ export default function ProjectNew() {
 
   const collectData = () => {
     setLoading(true);
-    Promise.all([projectTypeClient.getAll()])
+    let requests = [projectTypeClient.getAll()];
+    if (id) requests.push(projectClient.getProjectById(id));
+    Promise.all(requests)
       .then((values) => {
         setProjectTypes(values[0].data.projectTypes);
+        if (id) {
+          setProject(values[1].data.project);
+        }
+      })
+      .catch((err) => {
+        console.log(err.response.data.error);
+        enqueueSnackbar({
+          message: err.response.data.error,
+          variant: "error",
+        });
+        setProject(null);
       })
       .finally(() => {
         setLoading(false);
@@ -97,33 +112,52 @@ export default function ProjectNew() {
       payload.maximumOfGeneratedTexts = null;
       payload.generatedTextTitles = null;
     }
-    console.log(payload);
-    projectClient
-      .createProject(payload)
-      .then((data) => {
-        console.log(data);
-        enqueueSnackbar({
-          message: "Created project successfully!",
-          variant: "success",
+    if (project.id) {
+      console.log(project);
+      projectClient
+        .updateProject(project)
+        .then(({ data }) => {
+          console.log(data);
+          setProject(data.project);
+          enqueueSnackbar({
+            message: "Updated project successfully!",
+            variant: "success",
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar({
+            message: err.response.data.error || err.response.data.message,
+            variant: "error",
+          });
         });
-        setProject(initProject);
-      })
-      .catch((err) => {
-        console.log(err);
-        enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
-          variant: "error",
+    } else {
+      projectClient
+        .createProject(payload)
+        .then((data) => {
+          enqueueSnackbar({
+            message: "Created project successfully!",
+            variant: "success",
+          });
+          setProject(initProject);
+        })
+        .catch((err) => {
+          enqueueSnackbar({
+            message: err.response.data.error || err.response.data.message,
+            variant: "error",
+          });
         });
-      });
+    }
   };
 
-  if (![rolesCode.MANAGER].includes(user.role?.toUpperCase())) {
+  if (![rolesCode.MANAGER].includes(user.role?.toUpperCase()) || !project) {
     return <NotFound />;
   }
 
   return (
     <div>
-      <Typography variant="h3">New Project</Typography>
+      <Typography variant="h3">
+        {!!id ? "Update Project" : "New Project"}
+      </Typography>
       <Box component="form" className="mt-4" onSubmit={onSubmit}>
         <div className="flex flex-col">
           <TextField
@@ -149,6 +183,18 @@ export default function ProjectNew() {
           <div className="flex flex-row gap-2">
             <TextField
               className="flex-1"
+              value={project.maximumPerformer}
+              name="maximumPerformer"
+              label="Maximum  Performer"
+              size="small"
+              required
+              margin="normal"
+              fullWidth
+              type="number"
+              onChange={handleChangeProject}
+            />
+            <TextField
+              className="flex-1"
               value={project.numberOfTexts}
               name="numberOfTexts"
               label="Number Of Texts"
@@ -158,6 +204,7 @@ export default function ProjectNew() {
               fullWidth
               type="number"
               onChange={handleChangeProject}
+              disabled={!!project.id}
             />
             <TextField
               className="flex-1"
@@ -172,7 +219,12 @@ export default function ProjectNew() {
             />
           </div>
           <FormGroup>
-            <FormControl fullWidth margin="normal" size="small">
+            <FormControl
+              fullWidth
+              margin="normal"
+              size="small"
+              disabled={!!project.id}
+            >
               <InputLabel id="project-type-select-label">
                 Project Type
               </InputLabel>
@@ -196,32 +248,35 @@ export default function ProjectNew() {
               <FormControlLabel
                 className="flex-1"
                 name="hasLabelSets"
-                checked={project.hasLabelSets}
+                checked={!!project.hasLabelSets}
                 control={<Checkbox />}
                 label="Has Label Sets"
                 onChange={handleChangeProject}
+                disabled={!!project.id}
               />
             </div>
             <div className="flex flex-row items-start justify-between">
               <FormControlLabel
                 className="flex-1"
                 name="hasEntityRecognition"
-                checked={project.hasEntityRecognition}
+                checked={!!project.hasEntityRecognition}
                 control={<Checkbox />}
                 label="Has Entity Recognition"
                 onChange={handleChangeProject}
+                disabled={!!project.id}
               />
             </div>
             <div className="flex flex-row items-start justify-between">
               <FormControlLabel
                 className="flex-1"
                 name="hasGeneratedText"
-                checked={project.hasGeneratedText}
+                checked={!!project.hasGeneratedText}
                 control={<Checkbox />}
                 label="Has Generated Text"
                 onChange={handleChangeProject}
+                disabled={!!project.id}
               />
-              {project.hasGeneratedText && (
+              {!!project.hasGeneratedText && (
                 <div className="flex-1 flex flex-row gap-2">
                   <TextField
                     value={project.numberOfGeneratedTexts}
@@ -232,6 +287,7 @@ export default function ProjectNew() {
                     type="number"
                     fullWidth
                     onChange={handleChangeProject}
+                    disabled={!!project.id}
                   />
                   <TextField
                     value={project.maximumOfGeneratedTexts}
@@ -242,6 +298,7 @@ export default function ProjectNew() {
                     type="number"
                     fullWidth
                     onChange={handleChangeProject}
+                    disabled={!!project.id}
                   />
                 </div>
               )}
@@ -249,7 +306,7 @@ export default function ProjectNew() {
           </FormGroup>
 
           <Button type="submit" variant="contained" className="!mt-6">
-            Create
+            {!!id ? "Update" : "Create"}
           </Button>
         </div>
       </Box>

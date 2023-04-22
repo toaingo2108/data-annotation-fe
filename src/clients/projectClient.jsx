@@ -16,6 +16,10 @@ class ProjectClient {
   createProject(payload) {
     return axiosClient.post("/projects", payload);
   }
+
+  updateProject({ id, ...payload }) {
+    return axiosClient.patch(`/projects/${id}`, payload);
+  }
 }
 
 const projectClient = new ProjectClient();
