@@ -20,7 +20,8 @@ import { enqueueSnackbar } from "notistack";
 
 export default function ProjectNew() {
   const { user } = useStateContext();
-  const [project, setProject] = useState({
+
+  const initProject = {
     name: "",
     description: "",
     hasLabelSets: false,
@@ -35,7 +36,8 @@ export default function ProjectNew() {
     projectTypeId: "",
     labelSets: [],
     entities: [],
-  });
+  }
+  const [project, setProject] = useState(initProject);
 
   const handleChangeProject = (e) => {
     const name = e.target.name;
@@ -87,6 +89,7 @@ export default function ProjectNew() {
           message: "Created project successfully!",
           variant: "success",
         });
+        setProject(initProject);
       })
       .catch((err) => {
         console.log(err);
