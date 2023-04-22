@@ -83,7 +83,7 @@ export default function Projects() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
         {projects?.map((p) => (
           <div
             key={p.id}
@@ -98,14 +98,23 @@ export default function Projects() {
               overflow-hidden
             "
           >
-            <div className="text-lg whitespace-nowrap">{p.name}</div>
+            <div className="text-lg whitespace-nowrap overflow-hidden text-ellipsis">
+              {p.name}
+            </div>
             <div
               className="
               text-neutral-700 
                 font-light
+                h-20
+                overflow-auto
+                py-2
               "
             >
               {p.description}
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Cupiditate quas ea dolores, voluptas aliquid dolor error eos!
+              Harum suscipit mollitia commodi, beatae blanditiis autem doloribus
+              quaerat officiis qui, velit laboriosam?
             </div>
             <hr className="my-2" />
             <div className="flex flex-row items-center gap-1">
@@ -119,7 +128,7 @@ export default function Projects() {
                 </IconButton>
               </Tooltip>
               {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
-                <Tooltip placement="bottom" title="Info project">
+                <Tooltip placement="bottom" title="Edit Project ">
                   <IconButton
                     variant="outlined"
                     size="small"

@@ -9,8 +9,10 @@ class ProjectClient {
     });
   }
 
-  getProjectById(id) {
-    return axiosClient.get(`/projects/${id}`);
+  getProjectById({ id, ...query }) {
+    return axiosClient.get(`/projects/${id}`, {
+      params: query,
+    });
   }
 
   createProject(payload) {

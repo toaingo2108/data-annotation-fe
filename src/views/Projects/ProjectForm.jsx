@@ -5,6 +5,8 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -19,6 +21,7 @@ import projectClient from "../../clients/projectClient";
 import { enqueueSnackbar } from "notistack";
 import projectTypeClient from "../../clients/projectTypeClient";
 import { useParams } from "react-router-dom";
+import { Add, Clear } from "@mui/icons-material";
 
 export default function ProjectForm() {
   const { id } = useParams();
@@ -71,6 +74,12 @@ export default function ProjectForm() {
   };
   const [project, setProject] = useState(initProject);
 
+  const initLabelSetNew = {
+    pickOne: false,
+    labels: "",
+  };
+  const [labelSetNew, setLabelSetNew] = useState(initLabelSetNew);
+
   const handleChangeProject = (e) => {
     const name = e.target.name;
     let value = e.target.value;
@@ -96,6 +105,38 @@ export default function ProjectForm() {
     }
 
     setProject({ ...project, [name]: value });
+  };
+
+  const handleChangeLabelSet = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+    switch (name) {
+      case "pickOne":
+        return setLabelSetNew({ ...labelSetNew, [name]: e.target.checked });
+      default:
+        break;
+    }
+
+    setLabelSetNew({ ...labelSetNew, [name]: value });
+  };
+
+  const handleAddNewLabelSet = () => {
+    setProject({
+      ...project,
+      labelSets: [
+        ...project.labelSets,
+        {
+          pickOne: labelSetNew.pickOne,
+          labels: labelSetNew.labels.split(","),
+        },
+      ],
+    });
+    setLabelSetNew(initLabelSetNew);
+  };
+
+  const handleClearLabelSet = (index) => {
+    project.labelSets.splice(index, 1);
+    setProject({ ...project });
   };
 
   const onSubmit = (e) => {
@@ -254,6 +295,78 @@ export default function ProjectForm() {
                 onChange={handleChangeProject}
                 disabled={!!project.id}
               />
+              {!!project.hasLabelSets && (
+                <div className="flex-1 flex flex-col gap-2">
+                  {project.labelSets.map((labelSet, index) => (
+                    <React.Fragment key={`label ${index}`}>
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <FormControlLabel
+                          className="flex-1"
+                          checked={!!labelSet.pickOne}
+                          control={<Checkbox />}
+                          label="Pick one"
+                          disabled
+                        />
+                        <TextField
+                          className="col-span-2"
+                          value={labelSet.labels.join(",")}
+                          label="Labels"
+                          size="small"
+                          required
+                          margin="normal"
+                          fullWidth
+                          disabled
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleClearLabelSet(index)}
+                                >
+                                  <Clear />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </div>
+                      <hr />
+                    </React.Fragment>
+                  ))}
+                  <div className="grid grid-cols-3 items-center gap-2">
+                    <FormControlLabel
+                      key="label new"
+                      name="pickOne"
+                      checked={!!labelSetNew.pickOne}
+                      control={<Checkbox />}
+                      label="Pick one"
+                      onChange={handleChangeLabelSet}
+                    />
+                    <TextField
+                      className="col-span-2"
+                      value={labelSetNew.labels}
+                      name="labels"
+                      label="Labels"
+                      margin="normal"
+                      size="small"
+                      fullWidth
+                      onChange={handleChangeLabelSet}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleAddNewLabelSet()}
+                            >
+                              <Add />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex flex-row items-start justify-between">
               <FormControlLabel
