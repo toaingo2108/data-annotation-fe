@@ -3,6 +3,7 @@ import { useStateContext } from "../context/ContextProvider";
 import authClient from "../clients/authClient";
 import {
   AppBar,
+  Avatar,
   Box,
   Chip,
   Divider,
@@ -21,7 +22,9 @@ import {
 } from "@mui/material";
 import {
   AccountCircle,
+  AccountCircleRounded,
   Home,
+  ListRounded,
   Menu as MenuIcon,
   Person,
   Work,
@@ -141,7 +144,18 @@ export default function Header() {
           )}
           <div className="px-2">{user.name}</div>
           <div>
-            <IconButton
+            <Chip
+              label={
+                <div className="flex flex-row gap-1">
+                  <ListRounded />
+                  <AccountCircleRounded />
+                </div>
+              }
+              variant="filled"
+              className="!bg-white hover:!bg-neutral-200 !transition"
+              onClick={handleMenu}
+            />
+            {/* <IconButton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
@@ -150,7 +164,7 @@ export default function Header() {
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton> */}
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}

@@ -11,15 +11,22 @@ import {
 } from "@mui/material";
 import { Add, Edit, FilterAltRounded, Info } from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { rolesCode } from "../../utils/roles";
 import projectTypeClient from "../../clients/projectTypeClient";
+import { enqueueSnackbar } from "notistack";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [projectTypes, setProjectTypes] = useState([]);
   const navigate = useNavigate();
   const { user, setLoading } = useStateContext();
+  const [activeChip, setActiveChip] = useState(-1);
 
   useEffect(() => {
     collectData({});
@@ -35,6 +42,12 @@ export default function Projects() {
         setProjects(values[0].data.project);
         setProjectTypes(values[1].data.projectTypes);
       })
+      .catch((err) => {
+        enqueueSnackbar({
+          message: err.response.data.error || err.response.data.message,
+          variant: "error",
+        });
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -48,6 +61,7 @@ export default function Projects() {
         projectTypeId: id,
       });
     }
+    setActiveChip(id ? id : -1);
   };
 
   return (
@@ -76,14 +90,14 @@ export default function Projects() {
         <Chip
           key="type-all"
           label="All"
-          variant="outlined"
+          variant={activeChip === -1 ? "filled" : "outlined"}
           onClick={() => handleFilterProjectByType()}
         />
         {projectTypes.map((type) => (
           <Chip
             key={type.id}
             label={type.name}
-            variant="outlined"
+            variant={activeChip === type.id ? "filled" : "outlined"}
             onClick={() => handleFilterProjectByType(type.id)}
           />
         ))}
@@ -113,7 +127,8 @@ export default function Projects() {
                 font-light
                 h-20
                 overflow-auto
-                py-2
+                py-2 
+                whitespace-pre-wrap
               "
             >
               {p.description}
