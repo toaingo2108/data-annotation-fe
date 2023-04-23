@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Add, Edit, Info } from "@mui/icons-material";
+import { Add, Edit, FilterAltRounded, Info } from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import { rolesCode } from "../../utils/roles";
@@ -66,7 +66,13 @@ export default function Projects() {
       </div>
       <hr className="my-4" />
 
-      <div className="flex flex-row gap-2 mb-4 overflow-auto">
+      <div className="flex flex-row items-center gap-2 mb-4 overflow-auto">
+        <Chip
+          key="type-all"
+          label={<FilterAltRounded />}
+          variant="filled"
+          color="primary"
+        />
         <Chip
           key="type-all"
           label="All"

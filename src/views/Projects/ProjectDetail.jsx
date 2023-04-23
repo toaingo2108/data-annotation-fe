@@ -14,7 +14,8 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { colors } from "../../utils/constants";
 import { rolesCode } from "../../utils/roles";
-import { Add } from "@mui/icons-material";
+import { Add, DeleteForeverRounded } from "@mui/icons-material";
+import MySpeedDial from "../../components/speed-dial";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -22,6 +23,21 @@ export default function ProjectDetail() {
   const { user, setLoading } = useStateContext();
   const [openCreateSampleDrawer, setOpenCreateSampleDrawer] = useState(false);
   const [sampleTexts, setSampleTexts] = useState([]);
+
+  const actions = [
+    {
+      icon: <Add />,
+      name: "Create Sample",
+      onClick: () => setOpenCreateSampleDrawer(true),
+      isShow: [rolesCode.MANAGER].includes(user.role?.toUpperCase()),
+    },
+    {
+      icon: <DeleteForeverRounded className="text-red-600" />,
+      name: "Delete Project",
+      onClick: () => {},
+      isShow: true,
+    },
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -62,15 +78,6 @@ export default function ProjectDetail() {
         >
           {project.name}
         </Typography>
-        {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => setOpenCreateSampleDrawer(true)}
-          >
-            Create Sample
-          </Button>
-        )}
       </div>
       <hr className="my-4" />
       <div className="flex flex-col gap-2">
@@ -117,6 +124,9 @@ export default function ProjectDetail() {
             />
           </div>
         ))}
+      </div>
+      <div className="fixed">
+        <MySpeedDial actions={actions} />
       </div>
       <Drawer anchor="right" open={openCreateSampleDrawer}>
         <Box
