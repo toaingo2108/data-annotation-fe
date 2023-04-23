@@ -122,25 +122,12 @@ export default function ProjectDetail() {
         <Box
           component="form"
           onSubmit={onSubmit}
-          className="px-10 py-6 h-full "
-          width={500}
+          className="px-10 py-6 h-full md:w-[500px]"
         >
-          <div className="flex justify-between flex-col h-full ">
+          <div className="flex justify-between flex-col h-full">
             <div>
               <div className="text-2xl font-black mb-10 ">New Sample</div>
-              <div className="max-h-[600px] overflow-auto">
-                {sampleTexts.map((item, index) => (
-                  <TextField
-                    key={`sampleText ${index}`}
-                    label={item.title}
-                    value={item.text}
-                    onChange={handleChangeSampleTest(index)}
-                    fullWidth
-                    rows={4}
-                    multiline
-                    margin="dense"
-                  />
-                ))}
+              <div className="max-h-[500px] md:max-h-[600px] overflow-auto">
                 {sampleTexts.map((item, index) => (
                   <TextField
                     key={`sampleText ${index}`}
