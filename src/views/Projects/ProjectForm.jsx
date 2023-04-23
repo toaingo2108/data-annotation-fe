@@ -35,7 +35,7 @@ export default function ProjectForm() {
   const collectData = () => {
     setLoading(true);
     let requests = [projectTypeClient.getAll()];
-    if (id) requests.push(projectClient.getProjectById(id));
+    if (id) requests.push(projectClient.getProjectById({ id }));
     Promise.all(requests)
       .then((values) => {
         setProjectTypes(values[0].data.projectTypes);
@@ -44,7 +44,6 @@ export default function ProjectForm() {
         }
       })
       .catch((err) => {
-        console.log(err.response.data.error);
         enqueueSnackbar({
           message: err.response.data.error,
           variant: "error",
@@ -154,11 +153,9 @@ export default function ProjectForm() {
       payload.generatedTextTitles = null;
     }
     if (project.id) {
-      console.log(project);
       projectClient
         .updateProject(project)
         .then(({ data }) => {
-          console.log(data);
           setProject(data.project);
           enqueueSnackbar({
             message: "Updated project successfully!",
@@ -309,62 +306,76 @@ export default function ProjectForm() {
                         />
                         <TextField
                           className="col-span-2"
-                          value={labelSet.labels.join(",")}
+                          value={
+                            !project.id
+                              ? labelSet.labels.join(",")
+                              : labelSet.labels
+                                  .map((label) => label.label)
+                                  .join(",")
+                          }
                           label="Labels"
                           size="small"
                           required
                           margin="normal"
                           fullWidth
                           disabled
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleClearLabelSet(index)}
-                                >
-                                  <Clear />
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
+                          InputProps={
+                            !project.id
+                              ? {
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <IconButton
+                                        size="small"
+                                        onClick={() =>
+                                          handleClearLabelSet(index)
+                                        }
+                                      >
+                                        <Clear />
+                                      </IconButton>
+                                    </InputAdornment>
+                                  ),
+                                }
+                              : {}
+                          }
                         />
                       </div>
                       <hr />
                     </React.Fragment>
                   ))}
-                  <div className="grid grid-cols-3 items-center gap-2">
-                    <FormControlLabel
-                      key="label new"
-                      name="pickOne"
-                      checked={!!labelSetNew.pickOne}
-                      control={<Checkbox />}
-                      label="Pick one"
-                      onChange={handleChangeLabelSet}
-                    />
-                    <TextField
-                      className="col-span-2"
-                      value={labelSetNew.labels}
-                      name="labels"
-                      label="Labels"
-                      margin="normal"
-                      size="small"
-                      fullWidth
-                      onChange={handleChangeLabelSet}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleAddNewLabelSet()}
-                            >
-                              <Add />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
+                  {!project.id && (
+                    <div className="grid grid-cols-3 items-center gap-2">
+                      <FormControlLabel
+                        key="label new"
+                        name="pickOne"
+                        checked={!!labelSetNew.pickOne}
+                        control={<Checkbox />}
+                        label="Pick one"
+                        onChange={handleChangeLabelSet}
+                      />
+                      <TextField
+                        className="col-span-2"
+                        value={labelSetNew.labels}
+                        name="labels"
+                        label="Labels"
+                        margin="normal"
+                        size="small"
+                        fullWidth
+                        onChange={handleChangeLabelSet}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleAddNewLabelSet()}
+                              >
+                                <Add />
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

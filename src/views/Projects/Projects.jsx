@@ -68,7 +68,7 @@ export default function Projects() {
 
       <div className="flex flex-row items-center gap-2 mb-4 overflow-auto">
         <Chip
-          key="type-all"
+          key="icon-filter"
           label={<FilterAltRounded />}
           variant="filled"
           color="primary"
