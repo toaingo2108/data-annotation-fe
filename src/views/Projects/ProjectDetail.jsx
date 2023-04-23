@@ -96,7 +96,7 @@ export default function ProjectDetail() {
           </div>
         ))}
       </div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 mt-4">
         {project.entities?.map((item, index) => (
           <Chip
             key={`entity ${index} ${item.id}`}

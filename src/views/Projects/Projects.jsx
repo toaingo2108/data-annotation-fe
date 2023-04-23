@@ -117,10 +117,6 @@ export default function Projects() {
               "
             >
               {p.description}
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Cupiditate quas ea dolores, voluptas aliquid dolor error eos!
-              Harum suscipit mollitia commodi, beatae blanditiis autem doloribus
-              quaerat officiis qui, velit laboriosam?
             </div>
             <hr className="my-2" />
             <div className="flex flex-row items-center gap-1">

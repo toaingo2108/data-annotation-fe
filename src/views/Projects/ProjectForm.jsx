@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -22,6 +23,7 @@ import { enqueueSnackbar } from "notistack";
 import projectTypeClient from "../../clients/projectTypeClient";
 import { useParams } from "react-router-dom";
 import { Add, Clear } from "@mui/icons-material";
+import { colors } from "../../utils/constants";
 
 export default function ProjectForm() {
   const { id } = useParams();
@@ -78,6 +80,8 @@ export default function ProjectForm() {
     labels: "",
   };
   const [labelSetNew, setLabelSetNew] = useState(initLabelSetNew);
+
+  const [entityNew, setEntityNew] = useState("");
 
   const handleChangeProject = (e) => {
     const name = e.target.name;
@@ -379,9 +383,9 @@ export default function ProjectForm() {
                 </div>
               )}
             </div>
-            <div className="flex flex-row items-start justify-between">
+            <div className="grid grid-cols-2 items-start">
               <FormControlLabel
-                className="flex-1"
+                className="w-1/2"
                 name="hasEntityRecognition"
                 checked={!!project.hasEntityRecognition}
                 control={<Checkbox />}
@@ -389,6 +393,55 @@ export default function ProjectForm() {
                 onChange={handleChangeProject}
                 disabled={!!project.id}
               />
+              {!!project.hasEntityRecognition && (
+                <div className="flex flex-col flex-1">
+                  <div className="flex flex-row gap-2 flex-wrap">
+                    {project.entities.map((entity, index) => (
+                      <Chip
+                        key={`entity ${index}`}
+                        label={entity.name}
+                        onDelete={() => {
+                          project.entities.splice(index, 1);
+                          setProject({ ...project });
+                        }}
+                        color={colors[index % 6]}
+                      />
+                    ))}
+                  </div>
+                  {!project.id && (
+                    <>
+                      <hr className="my-2" />
+                      <div className="grid items-center gap-2">
+                        <TextField
+                          value={entityNew}
+                          label="New Entity"
+                          margin="normal"
+                          size="small"
+                          fullWidth
+                          onChange={(e) => setEntityNew(e.target.value)}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  disabled={entityNew === ""}
+                                  size="small"
+                                  onClick={() => {
+                                    project.entities.push({ name: entityNew });
+                                    setProject({ ...project });
+                                    setEntityNew("");
+                                  }}
+                                >
+                                  <Add />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex flex-row items-start justify-between">
               <FormControlLabel
