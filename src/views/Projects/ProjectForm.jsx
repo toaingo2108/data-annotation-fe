@@ -27,7 +27,7 @@ import { colors } from "../../utils/constants";
 
 export default function ProjectForm() {
   const { id } = useParams();
-  const { user, setLoading } = useStateContext();
+  const { user, loading, setLoading } = useStateContext();
   const [projectTypes, setProjectTypes] = useState([]);
 
   useEffect(() => {
@@ -482,7 +482,12 @@ export default function ProjectForm() {
             </div>
           </FormGroup>
 
-          <Button type="submit" variant="contained" className="!mt-6">
+          <Button
+            disabled={loading}
+            type="submit"
+            variant="contained"
+            className="!mt-6"
+          >
             {!!id ? "Update" : "Create"}
           </Button>
         </div>

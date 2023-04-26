@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import projectClient from "../../clients/projectClient";
 import {
+  Avatar,
   Button,
   Chip,
   CircularProgress,
@@ -103,7 +104,7 @@ export default function Projects() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
         {projects?.map((p) => (
           <div
             key={p.id}
@@ -118,20 +119,29 @@ export default function Projects() {
               overflow-hidden
             "
           >
-            <div className="text-lg whitespace-nowrap overflow-hidden text-ellipsis">
-              {p.name}
-            </div>
-            <div
-              className="
-              text-neutral-700 
-                font-light
-                h-20
-                overflow-auto
-                py-2 
-                whitespace-pre-wrap
-              "
-            >
-              {p.description}
+            <div className="grid grid-cols-4 gap-4">
+              <div className="col-span-3">
+                <div className="text-lg whitespace-nowrap overflow-hidden text-ellipsis">
+                  {p.name}
+                </div>
+                <div
+                  className="
+                    text-neutral-700 
+                    font-light
+                    h-20
+                    overflow-auto
+                    py-2 
+                    whitespace-pre-wrap
+                  "
+                >
+                  {p.description}
+                </div>
+              </div>
+              <div className="col-span-1">
+                <Avatar variant="rounded" className="!w-16 !h-16">
+                  {p.name[0].toUpperCase()}
+                </Avatar>
+              </div>
             </div>
             <hr className="my-2" />
             <div className="flex flex-row items-center gap-1">

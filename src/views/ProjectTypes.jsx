@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import projectTypeClient from "../clients/projectTypeClient";
 import { useStateContext } from "../context/ContextProvider";
 import { enqueueSnackbar } from "notistack";
-import { Avatar, Chip, TextField } from "@mui/material";
+import { Avatar, Chip, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 export default function ProjectTypes() {
@@ -81,30 +81,34 @@ export default function ProjectTypes() {
   };
 
   return (
-    <div className="grid grid-cols-2">
-      <div className="flex flex-col justify-start gap-2">
-        {projectTypes.map((type) => (
-          <div key={type.id}>
-            <Chip
-              label={type.name}
-              avatar={<Avatar>{type.id}</Avatar>}
-              onDelete={() => handleDelete(type.id)}
-            />
-          </div>
-        ))}
-      </div>
-      <div>
-        <form onSubmit={onSubmit} className="flex flex-col gap-2">
-          <TextField inputRef={newTypeRef} label="New Type" />
-          <LoadingButton
-            loading={loadingCreate}
-            type="submit"
-            size="small"
-            variant="contained"
-          >
-            Create
-          </LoadingButton>
-        </form>
+    <div>
+      <Typography variant="h3">Types of Project</Typography>
+      <hr className="my-4"/>  
+      <div className="grid grid-cols-2">
+        <div className="flex flex-col justify-start gap-2">
+          {projectTypes.map((type) => (
+            <div key={type.id}>
+              <Chip
+                label={type.name}
+                avatar={<Avatar>{type.id}</Avatar>}
+                onDelete={() => handleDelete(type.id)}
+              />
+            </div>
+          ))}
+        </div>
+        <div>
+          <form onSubmit={onSubmit} className="flex flex-col gap-2">
+            <TextField inputRef={newTypeRef} label="New Type" />
+            <LoadingButton
+              loading={loadingCreate}
+              type="submit"
+              size="small"
+              variant="contained"
+            >
+              Create
+            </LoadingButton>
+          </form>
+        </div>
       </div>
     </div>
   );

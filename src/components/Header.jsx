@@ -21,12 +21,12 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  AccountCircle,
   AccountCircleRounded,
   Home,
   ListRounded,
   Menu as MenuIcon,
   Person,
+  Title,
   Work,
 } from "@mui/icons-material";
 import { rolesCode, rolesUser } from "../utils/roles";
@@ -47,7 +47,7 @@ const menu = [
   {
     title: "Project Types",
     url: "/project-types",
-    icon: <Work />,
+    icon: <Title />,
     forRoles: [rolesCode.MANAGER],
   },
   {
