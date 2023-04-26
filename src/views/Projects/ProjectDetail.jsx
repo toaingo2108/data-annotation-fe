@@ -16,6 +16,8 @@ import { colors } from "../../utils/constants";
 import { rolesCode } from "../../utils/roles";
 import { Add, DeleteForeverRounded } from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
+import sampleClient from "../../clients/sampleClient";
+import { enqueueSnackbar } from "notistack";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -23,6 +25,7 @@ export default function ProjectDetail() {
   const { user, setLoading } = useStateContext();
   const [openCreateSampleDrawer, setOpenCreateSampleDrawer] = useState(false);
   const [sampleTexts, setSampleTexts] = useState([]);
+  const [loadingCreateSample, setLoadingCreateSample] = useState(false);
 
   const actions = [
     {
@@ -40,6 +43,10 @@ export default function ProjectDetail() {
   ];
 
   useEffect(() => {
+    collectData();
+  }, []);
+
+  const collectData = () => {
     setLoading(true);
     projectClient
       .getProjectById({ id, withSamples: 1 })
@@ -57,7 +64,7 @@ export default function ProjectDetail() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  };
 
   const handleChangeSampleTest = (index) => (e) => {
     sampleTexts[index].text = e.target.value;
@@ -66,7 +73,30 @@ export default function ProjectDetail() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(sampleTexts);
+    const payload = {
+      projectId: project.id,
+      sampleTexts,
+    };
+    setLoadingCreateSample(true);
+    sampleClient
+      .create(payload)
+      .then((data) => {
+        enqueueSnackbar({
+          message: "Created Sample Successfully!",
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        enqueueSnackbar({
+          message: err.response.data.error || err.response.data.message,
+          variant: "error",
+        });
+      })
+      .finally(() => {
+        setLoadingCreateSample(false);
+        setOpenCreateSampleDrawer(false);
+        collectData();
+      });
   };
 
   return (
@@ -145,6 +175,7 @@ export default function ProjectDetail() {
                     value={item.text}
                     onChange={handleChangeSampleTest(index)}
                     fullWidth
+                    required
                     rows={4}
                     multiline
                     margin="dense"
@@ -154,10 +185,8 @@ export default function ProjectDetail() {
             </div>
             <div className="flex flex-row items-center gap-2">
               <LoadingButton
-                // loading={loading}
+                loading={loadingCreateSample}
                 variant="contained"
-                // disabled={!selectNewCourse?.id}
-                // onClick={handleSubmit}
                 type="submit"
               >
                 Create
