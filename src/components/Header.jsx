@@ -45,6 +45,12 @@ const menu = [
     icon: <Work />,
   },
   {
+    title: "Project Types",
+    url: "/project-types",
+    icon: <Work />,
+    forRoles: [rolesCode.MANAGER],
+  },
+  {
     title: "Users",
     url: "/users",
     icon: <Person />,

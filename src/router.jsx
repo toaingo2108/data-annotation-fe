@@ -10,6 +10,7 @@ import UserForm from "./views/UserForm";
 import Projects from "./views/Projects/Projects";
 import ProjectDetail from "./views/Projects/ProjectDetail";
 import ProjectForm from "./views/Projects/ProjectForm";
+import ProjectTypes from "./views/ProjectTypes";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/projects/detail/:id",
         element: <ProjectDetail />,
+      },
+      {
+        path: "/project-types",
+        element: <ProjectTypes />,
       },
       {
         path: "/my-profile",
