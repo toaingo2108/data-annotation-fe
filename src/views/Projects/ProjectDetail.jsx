@@ -18,6 +18,7 @@ import { Add, DeleteForeverRounded } from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
+import SampleDialog from "../../components/sample-dialog/SampleDialog";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -26,6 +27,9 @@ export default function ProjectDetail() {
   const [openCreateSampleDrawer, setOpenCreateSampleDrawer] = useState(false);
   const [sampleTexts, setSampleTexts] = useState([]);
   const [loadingCreateSample, setLoadingCreateSample] = useState(false);
+  const [openSample, setOpenSample] = useState(false);
+  const [sampleChose, setSampleChose] = useState({});
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const actions = [
     {
@@ -51,7 +55,6 @@ export default function ProjectDetail() {
     projectClient
       .getProjectById({ id, withSamples: 1 })
       .then(({ data }) => {
-        console.log(data.project);
         setProject(data.project);
         const textTitles = data.project.textTitles.split(",");
         setSampleTexts(
@@ -99,6 +102,46 @@ export default function ProjectDetail() {
       });
   };
 
+  const handleOpenSample = (sample) => {
+    setOpenSample(true);
+    setSampleChose(sample);
+  };
+
+  const handleCloseSample = () => {
+    setOpenSample(false);
+    setSampleChose({});
+  };
+
+  // const handleMouseMove = (e) => {
+  //   var x = e.clientX;
+  //   var y = e.clientY;
+
+  //   if (showPopup.open) {
+  //     setShowPopup({ ...showPopup, top: e.clientY, left: e.clientX });
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const updateMousePosition = (event) => {
+  //     setPosition({ x: event.clientX, y: event.clientY });
+  //   };
+
+  //   document.addEventListener("mousemove", updateMousePosition);
+
+  //   return () => {
+  //     document.removeEventListener("mousemove", updateMousePosition);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   if (popupRef.current) {
+  //     const { width, height } = popupRef.current.getBoundingClientRect();
+  //     const x = position.x;
+  //     const y = position.y + 20;
+  //     popupRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  //   }
+  // }, [showPopup]);
+
   return (
     <div>
       <div className="flex flex-row justify-between items-baseline">
@@ -140,9 +183,7 @@ export default function ProjectDetail() {
         {project.samples?.map((s) => (
           <div
             key={`sample - ${s.id}`}
-            onClick={() => {
-              console.log(123);
-            }}
+            onClick={() => handleOpenSample(s)}
             className="flex flex-row gap-4 px-4 py-2 items-center cursor-pointer border shadow-sm rounded-lg hover:shadow-lg transition"
           >
             <div>{s.id}</div>
@@ -202,6 +243,14 @@ export default function ProjectDetail() {
           </div>
         </Box>
       </Drawer>
+      {openSample && (
+        <SampleDialog
+          isOpen={openSample}
+          project={project}
+          sampleChose={sampleChose}
+          onClose={() => handleCloseSample()}
+        />
+      )}
     </div>
   );
 }

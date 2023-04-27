@@ -5,6 +5,7 @@ import authClient from "../clients/authClient";
 import Header from "./Header";
 import { Container } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
+import Footer from "./Footer";
 
 export default function DefaultLayout() {
   const { token, setUser, setToken } = useStateContext();
@@ -30,9 +31,10 @@ export default function DefaultLayout() {
   return (
     <div className="flex flex-col">
       <Header />
-      <Container className="mt-4">
+      <Container className="mt-4 min-h-screen">
         <Outlet />
       </Container>
+      <Footer />
     </div>
   );
 }

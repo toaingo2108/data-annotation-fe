@@ -21,6 +21,7 @@ import {
 import { rolesCode } from "../../utils/roles";
 import projectTypeClient from "../../clients/projectTypeClient";
 import { enqueueSnackbar } from "notistack";
+import CustomNoRows from "../../components/CustomNoRows";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -30,7 +31,7 @@ export default function Projects() {
   const [activeChip, setActiveChip] = useState(-1);
 
   useEffect(() => {
-    collectData({});
+    handleFilterProjectByType(activeChip);
   }, []);
 
   const collectData = (queryProject) => {
@@ -55,7 +56,7 @@ export default function Projects() {
   };
 
   const handleFilterProjectByType = (id) => {
-    if (!id) {
+    if (!id || id === -1) {
       collectData({});
     } else {
       collectData({
@@ -104,11 +105,12 @@ export default function Projects() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
-        {projects?.map((p) => (
-          <div
-            key={p.id}
-            className="
+      {!!projects?.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
+          {projects?.map((p) => (
+            <div
+              key={p.id}
+              className="
               shadow-md 
               hover:shadow-lg 
               transition 
@@ -118,14 +120,14 @@ export default function Projects() {
               cursor-pointer
               overflow-hidden
             "
-          >
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-3">
-                <div className="text-lg whitespace-nowrap overflow-hidden text-ellipsis">
-                  {p.name}
-                </div>
-                <div
-                  className="
+            >
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-3">
+                  <div className="text-lg whitespace-nowrap overflow-hidden text-ellipsis">
+                    {p.name}
+                  </div>
+                  <div
+                    className="
                     text-neutral-700 
                     font-light
                     h-20
@@ -133,42 +135,47 @@ export default function Projects() {
                     py-2 
                     whitespace-pre-wrap
                   "
-                >
-                  {p.description}
+                  >
+                    {p.description}
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <Avatar variant="rounded" className="!w-16 !h-16">
+                    {p.name[0].toUpperCase()}
+                  </Avatar>
                 </div>
               </div>
-              <div className="col-span-1">
-                <Avatar variant="rounded" className="!w-16 !h-16">
-                  {p.name[0].toUpperCase()}
-                </Avatar>
-              </div>
-            </div>
-            <hr className="my-2" />
-            <div className="flex flex-row items-center gap-1">
-              <Tooltip placement="bottom" title="Info project">
-                <IconButton
-                  variant="outlined"
-                  size="small"
-                  onClick={() => navigate("/projects/detail/" + p.id)}
-                >
-                  <Info color="primary" />
-                </IconButton>
-              </Tooltip>
-              {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
-                <Tooltip placement="bottom" title="Edit Project ">
+              <hr className="my-2" />
+              <div className="flex flex-row items-center gap-1">
+                <Tooltip placement="bottom" title="Info project">
                   <IconButton
                     variant="outlined"
                     size="small"
-                    onClick={() => navigate("/projects/edit/" + p.id)}
+                    onClick={() => navigate("/projects/detail/" + p.id)}
                   >
-                    <Edit color="default" />
+                    <Info color="primary" />
                   </IconButton>
                 </Tooltip>
-              )}
+                {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
+                  <Tooltip placement="bottom" title="Edit Project ">
+                    <IconButton
+                      variant="outlined"
+                      size="small"
+                      onClick={() => navigate("/projects/edit/" + p.id)}
+                    >
+                      <Edit color="default" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-row justify-center col-start-auto">
+          <CustomNoRows />
+        </div>
+      )}
     </div>
   );
 }
