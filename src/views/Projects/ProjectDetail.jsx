@@ -18,7 +18,7 @@ import { Add, DeleteForeverRounded } from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
-import SampleDialog from "../../components/sample-dialog/SampleDialog";
+import SampleDialog from "../../components/sample/SampleDialog";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -29,7 +29,6 @@ export default function ProjectDetail() {
   const [loadingCreateSample, setLoadingCreateSample] = useState(false);
   const [openSample, setOpenSample] = useState(false);
   const [sampleChose, setSampleChose] = useState({});
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const actions = [
     {

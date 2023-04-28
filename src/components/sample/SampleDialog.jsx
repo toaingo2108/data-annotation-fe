@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AnnotationXYThreshold } from "react-annotation";
 
 const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -23,7 +24,10 @@ export default function SampleDialog({
 }) {
   const [open, setOpen] = useState(isOpen);
   const [showPopup, setShowPopup] = useState(false);
-  const popupRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [rangeTextSelected, setRangeTextSelected] = useState({});
+  const [labelSetsClient, setLabelSetsClient] = useState([]);
+  const popupRef = useRef();
 
   useEffect(() => {
     setOpen(isOpen);
@@ -36,17 +40,54 @@ export default function SampleDialog({
     }, 300);
   }, [onClose]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (indexText) => (e) => {
     var selection = window.getSelection();
     var range = selection.getRangeAt(0);
-
-    if (!!selection.toString()) {
-      console.log(!!selection.toString());
-      setShowPopup(true);
-    } else {
-      setShowPopup(false);
+    const rect = range.getBoundingClientRect();
+    if (!selection.toString()) {
+      return setShowPopup(false);
     }
+    setShowPopup(true);
+    setRangeTextSelected({
+      projectId: project.id,
+      sampleId: sampleChose.id,
+      textIndex: indexText,
+      start: range.startOffset,
+      end: range.endOffset,
+    });
   };
+
+  const handleSetLabel = ({ id, label }) => {
+    console.log(labelSetsClient);
+    const payload = {
+      labelId: id,
+      label: label,
+      ...rangeTextSelected,
+    };
+    console.log(payload);
+    setShowPopup(false);
+    setLabelSetsClient([...labelSetsClient, payload]);
+  };
+
+  useEffect(() => {
+    const updateMousePosition = (event) => {
+      setPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    document.addEventListener("mousemove", updateMousePosition);
+
+    return () => {
+      document.removeEventListener("mousemove", updateMousePosition);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (popupRef.current) {
+      const x = position.x + 20;
+      const y = position.y + 20;
+      popupRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+  }, [showPopup]);
 
   return (
     <div>
@@ -78,8 +119,8 @@ export default function SampleDialog({
             </div>
           </Toolbar>
         </AppBar>
-        <Container className="my-8">
-          <div className="flex flex-col gap-8">
+        <Container className="my-8 pb-40">
+          <div className="flex flex-col gap-8 relative">
             {sampleChose.sampleTexts?.map((text, index) => (
               <div key={text.id} className="shadow-lg rounded-md p-8">
                 <Typography variant="h5" align="center">
@@ -87,7 +128,8 @@ export default function SampleDialog({
                 </Typography>
                 <p
                   className="font-serif mt-4 whitespace-pre-wrap font-semibold"
-                  onMouseUp={handleMouseUp}
+                  onMouseUp={handleMouseUp(index)}
+                  onMouseDown={() => setShowPopup(false)}
                 >
                   {text.text}
                 </p>
@@ -99,13 +141,21 @@ export default function SampleDialog({
           <div
             ref={popupRef}
             id="popup"
-            className="w-40 h-auto shadow-lg rounded-lg overflow-hidden absolute bg-white"
+            className="w-60 h-auto border py-2 shadow-lg rounded-lg overflow-hidden fixed bg-white"
           >
             {project.labelSets?.map((labelSet) => (
               <div className="flex flex-col gap-2">
                 {labelSet.labels?.map((label) => (
-                  <div className="flex flex-row items-center gap-2 hover:bg-neutral-100 px-4 py-1 cursor-pointer">
-                    <Chip variant="outlined" label={label.label[0]} />
+                  <div
+                    key={label.id}
+                    onClick={() => handleSetLabel(label)}
+                    className="flex flex-row items-center gap-2 hover:bg-neutral-100 px-4 py-1 cursor-pointer"
+                  >
+                    <Chip
+                      variant="outlined"
+                      label={label.label[0]}
+                      className="!cursor-pointer"
+                    />
                     <div>{label.label}</div>
                   </div>
                 ))}
@@ -113,6 +163,20 @@ export default function SampleDialog({
             ))}
           </div>
         )}
+        <AnnotationXYThreshold
+          x={150}
+          y={170}
+          dy={117}
+          dx={162}
+          color={"#9610ff"}
+          editMode={true}
+          note={{
+            title: "Annotations :)",
+            label: "Longer text to show text wrapping",
+            lineType: "horizontal",
+          }}
+          subject={{ x1: 0, x2: 1000 }}
+        />
       </Dialog>
     </div>
   );

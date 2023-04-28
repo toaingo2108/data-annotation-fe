@@ -13,7 +13,7 @@ export default function NotFound({ children }) {
             <div className="my-4 text-lg">
               {children || "You do not have permission to access"}
             </div>
-            <Button variant="contained" onClick={() => navigate("/home")}>
+            <Button variant="contained" onClick={() => navigate("/projects")}>
               GO BACK HOME
             </Button>
           </div>

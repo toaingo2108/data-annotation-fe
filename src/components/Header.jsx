@@ -34,12 +34,6 @@ import { useNavigate } from "react-router-dom";
 
 const menu = [
   {
-    title: "Home",
-    url: "/home",
-    icon: <Home />,
-    divider: true,
-  },
-  {
     title: "Projects",
     url: "/projects",
     icon: <Work />,
