@@ -10,7 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AnnotationXYThreshold } from "react-annotation";
+import Footer from "../Footer";
+import { TextAnnotator, TokenAnnotator } from "react-text-annotate";
+import SampleText from "./SampleText";
 
 const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,6 +29,7 @@ export default function SampleDialog({
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [rangeTextSelected, setRangeTextSelected] = useState({});
   const [labelSetsClient, setLabelSetsClient] = useState([]);
+  const [value, setValue] = useState({});
   const popupRef = useRef();
 
   useEffect(() => {
@@ -40,54 +43,71 @@ export default function SampleDialog({
     }, 300);
   }, [onClose]);
 
-  const handleMouseUp = (indexText) => (e) => {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    if (!selection.toString()) {
-      return setShowPopup(false);
-    }
-    setShowPopup(true);
-    setRangeTextSelected({
-      projectId: project.id,
-      sampleId: sampleChose.id,
-      textIndex: indexText,
-      start: range.startOffset,
-      end: range.endOffset,
-    });
-  };
+  // const handleMouseUp = (textId) => (e) => {
+  //   var selection = window.getSelection();
+  //   var range = selection.getRangeAt(0);
+  //   const rect = range.getBoundingClientRect();
+  //   if (!selection.toString()) {
+  //     return setShowPopup(false);
+  //   }
+  //   setShowPopup(true);
+  //   setRangeTextSelected({
+  //     // projectId: project.id,
+  //     // sampleId: sampleChose.id,
+  //     textId,
+  //     start: range.startOffset,
+  //     end: range.endOffset,
+  //   });
+  // };
 
-  const handleSetLabel = ({ id, label }) => {
-    console.log(labelSetsClient);
-    const payload = {
-      labelId: id,
-      label: label,
-      ...rangeTextSelected,
-    };
-    console.log(payload);
-    setShowPopup(false);
-    setLabelSetsClient([...labelSetsClient, payload]);
-  };
+  // const handleSetLabel = ({ id, label }) => {
+  // const payload = {
+  //   labelId: id,
+  //   label: label,
+  //   ...rangeTextSelected,
+  // };
 
-  useEffect(() => {
-    const updateMousePosition = (event) => {
-      setPosition({ x: event.clientX, y: event.clientY });
-    };
+  // const index = labelSetsClient.findIndex(
+  //   (item) => item.textId === payload.textId
+  // );
 
-    document.addEventListener("mousemove", updateMousePosition);
+  // if (index >= 0) {
+  //   labelSetsClient[index].label.push(payload);
+  // } else {
+  //   labelSetsClient.push({
+  //     textId: payload.textId,
+  //     label: [payload],
+  //   });
+  // }
+  // setShowPopup(false);
+  // setLabelSetsClient([...labelSetsClient]);
+  // setLabelSetsClient([...labelSetsClient, value]);
+  // };
 
-    return () => {
-      document.removeEventListener("mousemove", updateMousePosition);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const updateMousePosition = (event) => {
+  //     setPosition({ x: event.clientX, y: event.clientY });
+  //   };
 
-  useEffect(() => {
-    if (popupRef.current) {
-      const x = position.x + 20;
-      const y = position.y + 20;
-      popupRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    }
-  }, [showPopup]);
+  //   document.addEventListener("mousemove", updateMousePosition);
+
+  //   return () => {
+  //     document.removeEventListener("mousemove", updateMousePosition);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   if (popupRef.current) {
+  //     const x = position.x + 20;
+  //     const y = position.y + 20;
+  //     popupRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  //   }
+  // }, [showPopup]);
+
+  // const handleOpenSetLabel = (value) => {
+  //   setShowPopup(true);
+  //   setValue(value);
+  // };
 
   return (
     <div>
@@ -123,21 +143,15 @@ export default function SampleDialog({
           <div className="flex flex-col gap-8 relative">
             {sampleChose.sampleTexts?.map((text, index) => (
               <div key={text.id} className="shadow-lg rounded-md p-8">
-                <Typography variant="h5" align="center">
+                <Typography variant="h5" align="center" className="!mb-4">
                   {project.textTitles.split(",")[index]}
                 </Typography>
-                <p
-                  className="font-serif mt-4 whitespace-pre-wrap font-semibold"
-                  onMouseUp={handleMouseUp(index)}
-                  onMouseDown={() => setShowPopup(false)}
-                >
-                  {text.text}
-                </p>
+                <SampleText text={text} project={project} index={index} />
               </div>
             ))}
           </div>
         </Container>
-        {showPopup && (
+        {/* {showPopup && (
           <div
             ref={popupRef}
             id="popup"
@@ -162,21 +176,8 @@ export default function SampleDialog({
               </div>
             ))}
           </div>
-        )}
-        <AnnotationXYThreshold
-          x={150}
-          y={170}
-          dy={117}
-          dx={162}
-          color={"#9610ff"}
-          editMode={true}
-          note={{
-            title: "Annotations :)",
-            label: "Longer text to show text wrapping",
-            lineType: "horizontal",
-          }}
-          subject={{ x1: 0, x2: 1000 }}
-        />
+        )} */}
+        <Footer />
       </Dialog>
     </div>
   );

@@ -57,14 +57,12 @@ export default function Footer() {
             <div>
               <Typography variant="h6">Features</Typography>
             </div>
-            <p className="text-neutral-400 my-4">
-              <ul className="list-disc">
-                <li>Management Project</li>
-                <li></li>
-                <li></li>
-                <li></li>
-              </ul>
-            </p>
+            <ul className="list-disc text-neutral-400 my-4">
+              <li>Management Project</li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
           </section>
         </section>
         <section className="flex flex-col gap-4">

@@ -124,7 +124,7 @@ export default function Header() {
   // UI
   return (
     <Fragment>
-      <AppBar position="static">
+      <AppBar position='sticky'>
         <Toolbar>
           <IconButton
             size="large"
