@@ -1,17 +1,18 @@
+import { Save } from "@mui/icons-material";
 import {
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
-  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { TokenAnnotator } from "react-text-annotate";
 
-export default function SampleText({ text, project, index }) {
+export default function SampleText({ text, project }) {
   const [state, setState] = useState({
     value: [],
-    tag: project.entities[0],
+    tag: project.entities[0].name,
   });
 
   const handleChange = (value) => {
@@ -22,41 +23,64 @@ export default function SampleText({ text, project, index }) {
     setState({ ...state, tag: e.target.value });
   };
 
-  const TEXT =
-    "When Sebastian Thrun started working on self-driving cars at Google in 2007, few people outside of the company took him seriously. “I can tell you very senior CEOs of major American car companies would shake my hand and turn away because I wasn’t worth talking to,” said Thrun, now the co-founder and CEO of online higher education startup Udacity, in an interview with Recode earlier this week. A little less than a decade later, dozens of self-driving startups have cropped up while automakers around the world clamor, wallet in hand, to secure their place in the fast-moving world of fully automated transportation.";
-  const TAG_COLORS = ["#00ffa2", "#ff8e84", "#ff84fb", "#84d2ff", "#efff84"];
+  const TAG_COLORS = useMemo(
+    () =>
+      project?.entities?.reduce(
+        (item, value, index) => ({
+          ...item,
+          [value.name]: ["#00ffa2", "#ff8e84", "#ff84fb", "#84d2ff", "#efff84"][
+            index
+          ],
+        }),
+        {}
+      ),
+    [project]
+  );
+
+  const handleSaveAnnotation = () => {
+    console.log(state.value);
+  };
 
   return (
     <React.Fragment>
-      <FormControl size="small" className="w-60">
-        <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
-        <Select
-          labelId={`select-label${text.id}`}
-          id={`select-label-id-${text.id}`}
-          value={state.tag}
-          label="Label"
-          onChange={handleTagChange}
+      <div className="flex flex-row items-center gap-4">
+        <FormControl size="small" className="w-60">
+          <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
+          <Select
+            labelId={`select-label${text.id}`}
+            id={`select-label-id-${text.id}`}
+            value={state.tag}
+            label="Label"
+            onChange={handleTagChange}
+          >
+            {project.entities?.map((entity, index) => (
+              <MenuItem key={entity.id} value={entity.name}>
+                {entity.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <IconButton
+          color="primary"
+          size="small"
+          onClick={() => handleSaveAnnotation()}
         >
-          {project.entities?.map((entity, index) => (
-            <MenuItem key={entity.id} value={entity}>
-              {entity.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          <Save />
+        </IconButton>
+      </div>
       <TokenAnnotator
         className="mt-4"
         style={{
           maxWidth: 500,
           lineHeight: 1.5,
         }}
-        tokens={TEXT.split(" ")}
+        tokens={text.text.split(" ")}
         value={state.value}
         onChange={handleChange}
         getSpan={(span) => ({
           ...span,
           tag: state.tag,
-          color: TAG_COLORS[state.tag.id],
+          color: TAG_COLORS[state.tag],
         })}
         renderMark={(props) => (
           <mark
@@ -76,7 +100,7 @@ export default function SampleText({ text, project, index }) {
               lineHeight: "1",
               display: "inline-block",
               borderRadius: ".25em",
-              background: TAG_COLORS[props.tagId],
+              background: TAG_COLORS[props.tag],
             }}
           >
             {props.content}
@@ -96,7 +120,7 @@ export default function SampleText({ text, project, index }) {
                 fontWeight: "700",
               }}
             >
-              {props.tag.name}
+              {props.tag}
             </span>
           </mark>
         )}
