@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import authClient from "../clients/authClient";
 import { useStateContext } from "../context/ContextProvider";
 import { enqueueSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { setToken, setUser } = useStateContext();
 
   const onSubmit = (e) => {
@@ -18,6 +20,7 @@ export default function Login() {
       password: passwordRef.current.value,
     };
     setErrors(null);
+    setLoading(true);
     authClient
       .login(payload)
       .then(({ data: { data } }) => {
@@ -35,6 +38,9 @@ export default function Login() {
             variant: "error",
           });
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -76,9 +82,15 @@ export default function Login() {
           type="password"
           autoComplete="current-password"
         />
-        <Button type="submit" fullWidth variant="contained" className="!mt-6">
+        <LoadingButton
+          loading={loading}
+          type="submit"
+          fullWidth
+          variant="contained"
+          className="!mt-6"
+        >
           Login
-        </Button>
+        </LoadingButton>
         <Typography variant="body2" align="center" className="!mt-4">
           Not Registered?{" "}
           <Link to="/signup" className="text-blue-900">
