@@ -30,6 +30,24 @@ export default function ProjectForm() {
   const { user, loading, setLoading } = useStateContext();
   const [projectTypes, setProjectTypes] = useState([]);
 
+  const initProject = {
+    name: "",
+    description: "",
+    hasLabelSets: false,
+    hasEntityRecognition: false,
+    numberOfTexts: 0,
+    textTitles: "",
+    hasGeneratedText: false,
+    numberOfGeneratedTexts: 0,
+    maximumOfGeneratedTexts: 0,
+    generatedTextTitles: "",
+    maximumPerformer: 0,
+    projectTypeId: "",
+    labelSets: [],
+    entities: [],
+  };
+  const [project, setProject] = useState(initProject);
+
   useEffect(() => {
     collectData({});
   }, []);
@@ -56,24 +74,6 @@ export default function ProjectForm() {
         setLoading(false);
       });
   };
-
-  const initProject = {
-    name: "",
-    description: "",
-    hasLabelSets: false,
-    hasEntityRecognition: false,
-    numberOfTexts: 0,
-    textTitles: "",
-    hasGeneratedText: false,
-    numberOfGeneratedTexts: 0,
-    maximumOfGeneratedTexts: 0,
-    generatedTextTitles: "",
-    maximumPerformer: 0,
-    projectTypeId: "",
-    labelSets: [],
-    entities: [],
-  };
-  const [project, setProject] = useState(initProject);
 
   const initLabelSetNew = {
     pickOne: false,
@@ -396,7 +396,7 @@ export default function ProjectForm() {
               {!!project.hasEntityRecognition && (
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-row gap-2 flex-wrap">
-                    {project.entities.map((entity, index) => (
+                    {project.entities?.map((entity, index) => (
                       <Chip
                         key={`entity ${index}`}
                         label={entity.name}

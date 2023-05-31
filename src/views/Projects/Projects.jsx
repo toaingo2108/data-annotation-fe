@@ -145,6 +145,9 @@ export default function Projects() {
                   </Avatar>
                 </div>
               </div>
+              <div>
+                
+              </div>
               <hr className="my-2" />
               <div className="flex flex-row items-center gap-1">
                 <Tooltip placement="bottom" title="Info project">

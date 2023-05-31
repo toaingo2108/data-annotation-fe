@@ -6,13 +6,27 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { TokenAnnotator } from "react-text-annotate";
+import sampleClient from "../../clients/sampleClient";
+import { enqueueSnackbar } from "notistack";
+import { useStateContext } from "../../context/ContextProvider";
 
-export default function SampleText({ text, project }) {
+export default function SampleText({ text, entities }) {
+  const { user } = useStateContext();
   const [state, setState] = useState({
-    value: [],
-    tag: project.entities[0].name,
+    value:
+      text?.entities
+        ?.filter((entity) => entity.pivot.performerId === user.id)
+        ?.map((entity) => ({
+          start: entity.pivot.start,
+          end: entity.pivot.end,
+          tag: entity.name,
+          tokens: text.text
+            .split(" ")
+            .splice(entity.pivot.start, entity.pivot.end - entity.pivot.start),
+        })) || [],
+    tag: entities[0].name,
   });
 
   const handleChange = (value) => {
@@ -25,7 +39,7 @@ export default function SampleText({ text, project }) {
 
   const TAG_COLORS = useMemo(
     () =>
-      project?.entities?.reduce(
+      entities?.reduce(
         (item, value, index) => ({
           ...item,
           [value.name]: ["#00ffa2", "#ff8e84", "#ff84fb", "#84d2ff", "#efff84"][
@@ -34,11 +48,34 @@ export default function SampleText({ text, project }) {
         }),
         {}
       ),
-    [project]
+    [entities]
   );
 
   const handleSaveAnnotation = () => {
-    console.log(state.value);
+    const payload = state.value.map((value) => ({
+      sampleTextId: text.id,
+      entityId: entities.find((entity) => entity.name === value.tag)?.id,
+      start: value.start,
+      end: value.end,
+    }));
+    sampleClient
+      .addAnnotation({
+        id: text.id,
+        entityRecognition: payload,
+      })
+      .then((data) => {
+        enqueueSnackbar({
+          message: "Updated suscessfully!",
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar({
+          message: err.response.data.error || err.response.data.message,
+          variant: "error",
+        });
+      });
   };
 
   return (
@@ -48,12 +85,11 @@ export default function SampleText({ text, project }) {
           <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
           <Select
             labelId={`select-label${text.id}`}
-            id={`select-label-id-${text.id}`}
             value={state.tag}
             label="Label"
             onChange={handleTagChange}
           >
-            {project.entities?.map((entity, index) => (
+            {entities?.map((entity, index) => (
               <MenuItem key={entity.id} value={entity.name}>
                 {entity.name}
               </MenuItem>

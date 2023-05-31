@@ -12,6 +12,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import Footer from "../Footer";
 import SampleText from "./SampleText";
+import sampleClient from "../../clients/sampleClient";
 
 const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -24,10 +25,27 @@ export default function SampleDialog({
   onClose,
 }) {
   const [open, setOpen] = useState(isOpen);
+  const [sample, setSample] = useState({});
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  useEffect(() => {
+    collectData();
+  }, []);
+
+  const collectData = () => {
+    sampleClient
+      .getById({
+        id: sampleChose.id,
+        withEntities: true,
+        withGeneratedTexts: true,
+      })
+      .then(({ data }) => {
+        setSample(data.sample);
+      });
+  };
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -66,14 +84,14 @@ export default function SampleDialog({
             </div>
           </Toolbar>
         </AppBar>
-        <Container className="my-8 pb-40">
+        <Container className="my-8 pb-40 min-h-screen">
           <div className="flex flex-col gap-8 relative">
-            {sampleChose.sampleTexts?.map((text, index) => (
+            {sample.sampleTexts?.map((text, index) => (
               <div key={text.id} className="shadow-lg rounded-md p-8">
                 <Typography variant="h5" align="center" className="!mb-4">
                   {project.textTitles.split(",")[index]}
                 </Typography>
-                <SampleText text={text} project={project} />
+                <SampleText text={text} entities={project.entities} />
               </div>
             ))}
           </div>

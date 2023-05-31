@@ -12,6 +12,10 @@ class ProjectTypeClient {
   delete(id) {
     return axiosClient.delete(`/project-types/${id}`);
   }
+
+  update({ id, name }) {
+    return axiosClient.patch(`/project-types/${id}`, { name });
+  }
 }
 
 const projectTypeClient = new ProjectTypeClient();
