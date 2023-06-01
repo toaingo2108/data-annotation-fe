@@ -113,36 +113,6 @@ export default function ProjectDetail() {
     setSampleChose({});
   };
 
-  // const handleMouseMove = (e) => {
-  //   var x = e.clientX;
-  //   var y = e.clientY;
-
-  //   if (showPopup.open) {
-  //     setShowPopup({ ...showPopup, top: e.clientY, left: e.clientX });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const updateMousePosition = (event) => {
-  //     setPosition({ x: event.clientX, y: event.clientY });
-  //   };
-
-  //   document.addEventListener("mousemove", updateMousePosition);
-
-  //   return () => {
-  //     document.removeEventListener("mousemove", updateMousePosition);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (popupRef.current) {
-  //     const { width, height } = popupRef.current.getBoundingClientRect();
-  //     const x = position.x;
-  //     const y = position.y + 20;
-  //     popupRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  //   }
-  // }, [showPopup]);
-
   return (
     <div>
       <div className="flex flex-col">

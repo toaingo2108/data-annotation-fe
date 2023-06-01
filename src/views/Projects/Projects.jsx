@@ -111,15 +111,16 @@ export default function Projects() {
             <div
               key={p.id}
               className="
-              shadow-md 
-              hover:shadow-lg 
-              transition 
-              rounded-md 
-              px-4 
-              py-3 
-              cursor-pointer
-              overflow-hidden
-            "
+                shadow-md 
+                hover:shadow-lg 
+                transition 
+                rounded-md 
+                px-4 
+                py-3 
+                cursor-pointer
+                overflow-hidden
+              "
+              onClick={() => navigate("/projects/detail/" + p.id)}
             >
               <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-3">
@@ -128,13 +129,13 @@ export default function Projects() {
                   </div>
                   <div
                     className="
-                    text-neutral-700 
-                    font-light
-                    h-20
-                    overflow-auto
-                    py-2 
-                    whitespace-pre-wrap
-                  "
+                      text-neutral-700 
+                      font-light
+                      h-20
+                      overflow-auto
+                      py-2 
+                      whitespace-pre-wrap
+                    "
                   >
                     {p.description}
                   </div>
@@ -145,9 +146,7 @@ export default function Projects() {
                   </Avatar>
                 </div>
               </div>
-              <div>
-                
-              </div>
+              <div></div>
               <hr className="my-2" />
               <div className="flex flex-row items-center gap-1">
                 <Tooltip placement="bottom" title="Info project">
