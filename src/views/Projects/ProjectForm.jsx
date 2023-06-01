@@ -467,6 +467,16 @@ export default function ProjectForm() {
                     disabled={!!project.id}
                   />
                   <TextField
+                    value={project.generatedTextTitles}
+                    name="generatedTextTitles"
+                    label="Generated Text Titles"
+                    size="small"
+                    required
+                    fullWidth
+                    onChange={handleChangeProject}
+                    disabled={!!project.id}
+                  />
+                  <TextField
                     value={project.maximumOfGeneratedTexts}
                     name="maximumOfGeneratedTexts"
                     label="Maximum Of Generated Texts"

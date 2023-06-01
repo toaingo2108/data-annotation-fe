@@ -6,7 +6,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { TokenAnnotator } from "react-text-annotate";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
@@ -26,7 +26,7 @@ export default function SampleText({ text, entities }) {
             .split(" ")
             .splice(entity.pivot.start, entity.pivot.end - entity.pivot.start),
         })) || [],
-    tag: entities[0].name,
+    tag: entities?.[0]?.name,
   });
 
   const handleChange = (value) => {
@@ -60,7 +60,7 @@ export default function SampleText({ text, entities }) {
     }));
     sampleClient
       .addAnnotation({
-        id: text.id,
+        id: text.sampleId,
         entityRecognition: payload,
       })
       .then((data) => {
@@ -81,28 +81,32 @@ export default function SampleText({ text, entities }) {
   return (
     <React.Fragment>
       <div className="flex flex-row items-center gap-4">
-        <FormControl size="small" className="w-60">
-          <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
-          <Select
-            labelId={`select-label${text.id}`}
-            value={state.tag}
-            label="Label"
-            onChange={handleTagChange}
-          >
-            {entities?.map((entity, index) => (
-              <MenuItem key={entity.id} value={entity.name}>
-                {entity.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <IconButton
-          color="primary"
-          size="small"
-          onClick={() => handleSaveAnnotation()}
-        >
-          <Save />
-        </IconButton>
+        {!!entities?.length && (
+          <>
+            <FormControl size="small" className="w-60">
+              <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
+              <Select
+                labelId={`select-label${text.id}`}
+                value={state.tag}
+                label="Label"
+                onChange={handleTagChange}
+              >
+                {entities?.map((entity, index) => (
+                  <MenuItem key={entity.id} value={entity.name}>
+                    {entity.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <IconButton
+              color="primary"
+              size="small"
+              onClick={() => handleSaveAnnotation()}
+            >
+              <Save />
+            </IconButton>
+          </>
+        )}
       </div>
       <TokenAnnotator
         className="mt-4"

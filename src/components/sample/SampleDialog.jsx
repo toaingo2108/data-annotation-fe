@@ -13,6 +13,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import Footer from "../Footer";
 import SampleText from "./SampleText";
 import sampleClient from "../../clients/sampleClient";
+import GeneratedTexts from "./GeneratedTexts";
+import { useStateContext } from "../../context/ContextProvider";
 
 const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -24,6 +26,7 @@ export default function SampleDialog({
   sampleChose,
   onClose,
 }) {
+  const { user, loading, setLoading } = useStateContext();
   const [open, setOpen] = useState(isOpen);
   const [sample, setSample] = useState({});
 
@@ -36,6 +39,7 @@ export default function SampleDialog({
   }, []);
 
   const collectData = () => {
+    setLoading(true);
     sampleClient
       .getById({
         id: sampleChose.id,
@@ -44,6 +48,9 @@ export default function SampleDialog({
       })
       .then(({ data }) => {
         setSample(data.sample);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -53,6 +60,8 @@ export default function SampleDialog({
       onClose();
     }, 300);
   }, [onClose]);
+
+  if (loading) return;
 
   return (
     <div>
@@ -84,20 +93,34 @@ export default function SampleDialog({
             </div>
           </Toolbar>
         </AppBar>
-        <Container className="my-8 pb-40 min-h-screen">
+        <Container className="my-8 pb-40">
           <div className="flex flex-col gap-8 relative">
             {sample.sampleTexts?.map((text, index) => (
-              <div key={text.id} className="shadow-lg rounded-md p-8">
+              <div key={text.id} className="shadow-lg rounded-md p-8 border">
                 <Typography variant="h5" align="center" className="!mb-4">
                   {project.textTitles.split(",")[index]}
                 </Typography>
                 <SampleText text={text} entities={project.entities} />
               </div>
             ))}
+
+            {!!project.hasGeneratedText && (
+              <div className="shadow-lg rounded-md p-8 border">
+                <GeneratedTexts
+                  generatedTextTitles={project.generatedTextTitles?.split(",")}
+                  generatedTexts={
+                    sample.generatedTexts?.filter(
+                      (item) => item.performerId === user.id
+                    ) || []
+                  }
+                  sampleId={sample.id}
+                />
+              </div>
+            )}
           </div>
         </Container>
 
-        <Footer />
+        {/* <Footer /> */}
       </Dialog>
     </div>
   );
