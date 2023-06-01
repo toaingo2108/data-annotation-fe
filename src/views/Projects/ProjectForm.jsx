@@ -21,7 +21,7 @@ import { useStateContext } from "../../context/ContextProvider";
 import projectClient from "../../clients/projectClient";
 import { enqueueSnackbar } from "notistack";
 import projectTypeClient from "../../clients/projectTypeClient";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Add, Clear } from "@mui/icons-material";
 import { colors } from "../../utils/constants";
 
@@ -29,6 +29,7 @@ export default function ProjectForm() {
   const { id } = useParams();
   const { user, loading, setLoading } = useStateContext();
   const [projectTypes, setProjectTypes] = useState([]);
+  const navigate = useNavigate();
 
   const initProject = {
     name: "",
@@ -160,11 +161,11 @@ export default function ProjectForm() {
       projectClient
         .updateProject(project)
         .then(({ data }) => {
-          setProject(data.project);
           enqueueSnackbar({
             message: "Updated project successfully!",
             variant: "success",
           });
+          navigate("/projects");
         })
         .catch((err) => {
           enqueueSnackbar({
@@ -180,7 +181,7 @@ export default function ProjectForm() {
             message: "Created project successfully!",
             variant: "success",
           });
-          setProject(initProject);
+          navigate("/projects");
         })
         .catch((err) => {
           enqueueSnackbar({

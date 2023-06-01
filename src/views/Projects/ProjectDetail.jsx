@@ -19,6 +19,7 @@ import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
 import SampleDialog from "../../components/sample/SampleDialog";
+import AssignedUsers from "../../components/AssignedUsers";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -52,7 +53,7 @@ export default function ProjectDetail() {
   const collectData = () => {
     setLoading(true);
     projectClient
-      .getProjectById({ id, withSamples: 1 })
+      .getProjectById({ id, withSamples: 1, withAssignedUsers: 1 })
       .then(({ data }) => {
         setProject(data.project);
         const textTitles = data.project.textTitles.split(",");
@@ -72,6 +73,7 @@ export default function ProjectDetail() {
     sampleTexts[index].text = e.target.value;
     setSampleTexts([...sampleTexts]);
   };
+  console.log(project);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -143,13 +145,19 @@ export default function ProjectDetail() {
 
   return (
     <div>
-      <div className="flex flex-row justify-between items-baseline">
+      <div className="flex flex-col">
         <Typography
           variant="h3"
           className="overflow-hidden whitespace-nowrap text-ellipsis"
         >
           {project.name}
         </Typography>
+        <div className="mt-4">
+          <AssignedUsers
+            projectId={project.id}
+            assignedUsers={project.assignedUsers}
+          />
+        </div>
       </div>
       <hr className="my-4" />
       <div className="flex flex-col gap-2">

@@ -5,20 +5,15 @@ import {
   Container,
   Dialog,
   IconButton,
-  Slide,
   Toolbar,
   Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import Footer from "../Footer";
 import SampleText from "./SampleText";
 import sampleClient from "../../clients/sampleClient";
 import GeneratedTexts from "./GeneratedTexts";
 import { useStateContext } from "../../context/ContextProvider";
-
-const Transition = React.forwardRef((props, ref) => {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import Transition from "../Transition";
 
 export default function SampleDialog({
   isOpen,

@@ -28,7 +28,7 @@ class ProjectClient {
   }
 
   assignUserToProject({ id, userIds }) {
-    return axiosClient.delete(`/projects/${id}/assignment`, {
+    return axiosClient.post(`/projects/${id}/assignment`, {
       userIds,
     });
   }
