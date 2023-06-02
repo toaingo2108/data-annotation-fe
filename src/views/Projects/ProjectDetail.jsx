@@ -122,12 +122,14 @@ export default function ProjectDetail() {
         >
           {project.name}
         </Typography>
-        <div className="mt-4">
-          <AssignedUsers
-            projectId={project.id}
-            assignedUsers={project.assignedUsers}
-          />
-        </div>
+        {user.role === rolesCode.MANAGER && (
+          <div className="mt-4">
+            <AssignedUsers
+              projectId={project.id}
+              assignedUsers={project.assignedUsers}
+            />
+          </div>
+        )}
       </div>
       <hr className="my-4" />
       <div className="flex flex-col gap-2">
