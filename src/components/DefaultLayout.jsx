@@ -31,7 +31,7 @@ export default function DefaultLayout() {
   return (
     <div className="flex flex-col">
       <Header />
-      <Container className="mt-4 min-h-screen">
+      <Container className="min-h-screen pt-6 pb-10">
         <Outlet />
       </Container>
       <Footer />
