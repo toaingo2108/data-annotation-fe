@@ -124,7 +124,7 @@ export default function Header() {
   // UI
   return (
     <Fragment>
-      <AppBar position='sticky'>
+      <AppBar position="sticky">
         <Toolbar>
           <IconButton
             size="large"
@@ -195,7 +195,9 @@ export default function Header() {
           </div>
         </Toolbar>
       </AppBar>
-      {loading && <LinearProgress />}
+      <div className={loading ? "visible" : "invisible"}>
+        <LinearProgress />
+      </div>
       <Drawer
         anchor="left"
         open={openMenuDrawer}
