@@ -8,7 +8,11 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { stringAvatar, stringToColor } from "../utils";
 import {
   AdminPanelSettingsRounded,
@@ -20,22 +24,24 @@ import Transition from "./Transition";
 import { useStateContext } from "../context/ContextProvider";
 import { rolesCode } from "../utils/roles";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
 import CustomNoRows from "./CustomNoRows";
 
 export default function AssignedUsers({
   projectId,
   assignedUsers,
 }) {
-  console.log(assignedUsers);
   const { setLoading } = useStateContext();
   const [unassignedUsers, setUnassignedUsers] = useState(
     []
   );
-  const [usersAssigned, setUsersAssigned] =
-    useState(assignedUsers);
+  const [usersAssigned, setUsersAssigned] = useState(
+    assignedUsers || []
+  );
   const [openDialog, setOpenDialog] = useState(false);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    setUsersAssigned(assignedUsers);
+  }, [assignedUsers]);
 
   const handleOpenAssignUser = useCallback(
     (projectId) => {
@@ -60,10 +66,7 @@ export default function AssignedUsers({
     }, 300);
   };
 
-  console.log(unassignedUsers);
-
   const handleAssignUser = (userId, index) => {
-    console.log(userId);
     projectClient
       .assignUserToProject({
         id: projectId,
@@ -74,7 +77,10 @@ export default function AssignedUsers({
           message: "Updated successfully!",
           variant: "success",
         });
-        usersAssigned.push(unassignedUsers[index]);
+        setUsersAssigned([
+          ...usersAssigned,
+          unassignedUsers[index],
+        ]);
       })
       .catch((err) => {
         enqueueSnackbar({
@@ -91,7 +97,7 @@ export default function AssignedUsers({
 
   return (
     <div className="flex flex-row gap-2">
-      {assignedUsers?.map((user) => (
+      {usersAssigned?.map((user) => (
         <Tooltip
           key={user.id}
           title={
