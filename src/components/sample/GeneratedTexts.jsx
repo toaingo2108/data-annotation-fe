@@ -26,10 +26,10 @@ export default function GeneratedTexts({
   };
 
   const handleUpdateAnnotation = () => {
-    console.log({
-      id: sampleId,
-      generated_texts: texts.map((text) => text.text),
-    });
+    // console.log({
+    //   id: sampleId,
+    //   generated_texts: texts.map((text) => text.text),
+    // });
     sampleClient
       .addAnnotation({
         id: sampleId,
@@ -80,17 +80,9 @@ export default function GeneratedTexts({
             variant="filled"
             fullWidth
             value={texts[index]?.text}
+            maxRows={10}
+            multiline
             onChange={handleChangeGeneratedText(index)}
-            // endAdornment={
-            //   <InputAdornment position="end">
-            //     <IconButton
-            //       onClick={() => handleDeleteGeneratedText(index)}
-            //       edge="end"
-            //     >
-            //       <DeleteOutlineRounded />
-            //     </IconButton>
-            //   </InputAdornment>
-            // }
           />
           {index + 1 < generatedTextTitles.length && <hr />}
         </div>
