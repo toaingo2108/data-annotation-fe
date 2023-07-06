@@ -230,13 +230,12 @@ export default function ProjectDetail() {
             onClick={() => handleOpenSample(s)}
             className="flex flex-row gap-4 px-4 py-2 items-center cursor-pointer border shadow-sm rounded-lg hover:shadow-lg transition"
           >
-            <div>{s.id}</div>
             <Chip
               className="!cursor-pointer"
               variant="outlined"
-              avatar={<Avatar />}
-              label={s.numberOfPerformer}
+              label="Sample"
             />
+            <div>{s.id}</div>
           </div>
         ))}
       </div>
