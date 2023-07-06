@@ -88,9 +88,15 @@ export default function SampleDialog({
     let labeling = {};
 
     lableSetPicked.forEach((item) => {
-      labeling[item.id] = item.labels
+      const value = item.labels
         .filter((label) => label.picked)
         .map((item) => item.id);
+
+      if (!!value.length) {
+        labeling[item.id] = item.labels
+          .filter((label) => label.picked)
+          .map((item) => item.id);
+      }
     });
 
     sampleClient
