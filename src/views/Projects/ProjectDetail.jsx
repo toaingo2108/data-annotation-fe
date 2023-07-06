@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import projectClient from "../../clients/projectClient";
 import { useStateContext } from "../../context/ContextProvider";
 import {
@@ -32,11 +32,16 @@ export default function ProjectDetail() {
     openCreateSampleDrawer,
     setOpenCreateSampleDrawer,
   ] = useState(false);
+  const [openDeleteProject, setOpenDeleteProject] =
+    useState(false);
   const [sampleTexts, setSampleTexts] = useState([]);
   const [loadingCreateSample, setLoadingCreateSample] =
     useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [openSample, setOpenSample] = useState(false);
   const [sampleChose, setSampleChose] = useState({});
+  const [projectName, setProjectName] = useState("");
+  const navigate = useNavigate();
 
   const actions = [
     {
@@ -52,7 +57,7 @@ export default function ProjectDetail() {
         <DeleteForeverRounded className="text-red-600" />
       ),
       name: "Delete Project",
-      onClick: () => {},
+      onClick: () => setOpenDeleteProject(true),
       isShow: true,
     },
   ];
@@ -120,6 +125,34 @@ export default function ProjectDetail() {
         setLoadingCreateSample(false);
         setOpenCreateSampleDrawer(false);
         collectData();
+      });
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    setLoadingDelete(true);
+    projectClient
+      .deleteProject({
+        id: project.id,
+      })
+      .then(() => {
+        enqueueSnackbar({
+          message: "Deleted Project Successfully!",
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        enqueueSnackbar({
+          message:
+            err.response.data.error ||
+            err.response.data.message,
+          variant: "error",
+        });
+      })
+      .finally(() => {
+        setLoadingDelete(false);
+        setOpenDeleteProject(false);
+        navigate("/");
       });
   };
 
@@ -258,6 +291,54 @@ export default function ProjectDetail() {
           </div>
         </Box>
       </Drawer>
+      <Drawer anchor="right" open={openDeleteProject}>
+        <Box
+          component="form"
+          onSubmit={handleDelete}
+          className="px-10 py-6 h-full md:w-[500px]"
+        >
+          <div className="flex justify-between flex-col h-full">
+            <div>
+              <div className="text-sm font-black mb-10 ">
+                Warning: Deleting this project will
+                permanently remove all associated data and
+                cannot be undone. Are you sure you want to
+                proceed with the deletion?
+              </div>
+              <div className="max-h-[500px] md:max-h-[600px] overflow-auto">
+                <TextField
+                  label="Project name"
+                  value={projectName}
+                  onChange={(e) =>
+                    setProjectName(e.target.value)
+                  }
+                  fullWidth
+                  required
+                  margin="dense"
+                />
+              </div>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <LoadingButton
+                loading={loadingDelete}
+                variant="contained"
+                type="submit"
+                disabled={projectName !== project.name}
+              >
+                Delete
+              </LoadingButton>
+              <Button
+                variant="outlined"
+                onClick={() => setOpenDeleteProject(false)}
+                color="error"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Box>
+      </Drawer>
+
       {openSample && (
         <SampleDialog
           isOpen={openSample}
