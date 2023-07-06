@@ -7,7 +7,6 @@ import GuestLayout from "./components/GuestLayout";
 import NotFound from "./views/NotFound";
 import Users from "./views/Users";
 import Login from "./views/Login";
-import Home from "./views/Home";
 import MyProfile from "./views/MyProfile";
 import UserForm from "./views/UserForm";
 import Projects from "./views/Projects/Projects";

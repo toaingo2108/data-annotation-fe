@@ -174,7 +174,7 @@ export default function ProjectForm() {
             message: "Updated project successfully!",
             variant: "success",
           });
-          navigate("/projects");
+          navigate("/");
         })
         .catch((err) => {
           enqueueSnackbar({
@@ -192,7 +192,7 @@ export default function ProjectForm() {
             message: "Created project successfully!",
             variant: "success",
           });
-          navigate("/projects");
+          navigate("/");
         })
         .catch((err) => {
           enqueueSnackbar({

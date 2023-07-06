@@ -11,9 +11,13 @@ export default function NotFound({ children }) {
         title={
           <div className="flex flex-col justify-center">
             <div className="my-4 text-lg">
-              {children || "You do not have permission to access"}
+              {children ||
+                "You do not have permission to access"}
             </div>
-            <Button variant="contained" onClick={() => navigate("/projects")}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/")}
+            >
               GO BACK HOME
             </Button>
           </div>
