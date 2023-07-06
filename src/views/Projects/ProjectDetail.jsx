@@ -14,7 +14,10 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { colors } from "../../utils/constants";
 import { rolesCode } from "../../utils/roles";
-import { Add, DeleteForeverRounded } from "@mui/icons-material";
+import {
+  Add,
+  DeleteForeverRounded,
+} from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
@@ -25,9 +28,13 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const [project, setProject] = useState({});
   const { user, setLoading } = useStateContext();
-  const [openCreateSampleDrawer, setOpenCreateSampleDrawer] = useState(false);
+  const [
+    openCreateSampleDrawer,
+    setOpenCreateSampleDrawer,
+  ] = useState(false);
   const [sampleTexts, setSampleTexts] = useState([]);
-  const [loadingCreateSample, setLoadingCreateSample] = useState(false);
+  const [loadingCreateSample, setLoadingCreateSample] =
+    useState(false);
   const [openSample, setOpenSample] = useState(false);
   const [sampleChose, setSampleChose] = useState({});
 
@@ -36,10 +43,14 @@ export default function ProjectDetail() {
       icon: <Add />,
       name: "Create Sample",
       onClick: () => setOpenCreateSampleDrawer(true),
-      isShow: [rolesCode.MANAGER].includes(user.role?.toUpperCase()),
+      isShow: [rolesCode.MANAGER].includes(
+        user.role?.toUpperCase()
+      ),
     },
     {
-      icon: <DeleteForeverRounded className="text-red-600" />,
+      icon: (
+        <DeleteForeverRounded className="text-red-600" />
+      ),
       name: "Delete Project",
       onClick: () => {},
       isShow: true,
@@ -53,12 +64,20 @@ export default function ProjectDetail() {
   const collectData = () => {
     setLoading(true);
     projectClient
-      .getProjectById({ id, withSamples: 1, withAssignedUsers: 1 })
+      .getProjectById({
+        id,
+        withSamples: 1,
+        withAssignedUsers: 1,
+      })
       .then(({ data }) => {
         setProject(data.project);
-        const textTitles = data.project.textTitles.split(",");
+        const textTitles =
+          data.project.textTitles.split(",");
         setSampleTexts(
-          Array.apply(null, Array(data.project.numberOfTexts)).map((x, i) => ({
+          Array.apply(
+            null,
+            Array(data.project.numberOfTexts)
+          ).map((x, i) => ({
             title: textTitles[i] || "",
             text: "",
           }))
@@ -73,7 +92,7 @@ export default function ProjectDetail() {
     sampleTexts[index].text = e.target.value;
     setSampleTexts([...sampleTexts]);
   };
-  console.log(project);
+  console.log({ project });
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -92,7 +111,9 @@ export default function ProjectDetail() {
       })
       .catch((err) => {
         enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
+          message:
+            err.response.data.error ||
+            err.response.data.message,
           variant: "error",
         });
       })
@@ -142,7 +163,9 @@ export default function ProjectDetail() {
               <Chip
                 key={`label ${label.id}`}
                 label={label.label}
-                variant={item.pickOne ? "outlined" : "filled"}
+                variant={
+                  item.pickOne ? "outlined" : "filled"
+                }
               />
             ))}
           </div>
@@ -186,7 +209,9 @@ export default function ProjectDetail() {
         >
           <div className="flex justify-between flex-col h-full">
             <div>
-              <div className="text-2xl font-black mb-10 ">New Sample</div>
+              <div className="text-2xl font-black mb-10 ">
+                New Sample
+              </div>
               <div className="max-h-[500px] md:max-h-[600px] overflow-auto">
                 {sampleTexts.map((item, index) => (
                   <TextField
@@ -213,7 +238,9 @@ export default function ProjectDetail() {
               </LoadingButton>
               <Button
                 variant="outlined"
-                onClick={() => setOpenCreateSampleDrawer(false)}
+                onClick={() =>
+                  setOpenCreateSampleDrawer(false)
+                }
                 color="error"
               >
                 Cancel

@@ -8,7 +8,11 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import SampleText from "./SampleText";
 import sampleClient from "../../clients/sampleClient";
 import GeneratedTexts from "./GeneratedTexts";
@@ -76,7 +80,11 @@ export default function SampleDialog({
             >
               <Close />
             </IconButton>
-            <Typography sx={{ ml: 2 }} variant="h6" component="div">
+            <Typography
+              sx={{ ml: 2 }}
+              variant="h6"
+              component="div"
+            >
               {project.name}
             </Typography>
             <div className="ml-2 flex-1">
@@ -91,27 +99,41 @@ export default function SampleDialog({
         <Container className="my-8 pb-40">
           <div className="flex flex-col gap-8 relative">
             {sample.sampleTexts?.map((text, index) => (
-              <div key={text.id} className="shadow-lg rounded-md p-8 border">
-                <Typography variant="h5" align="center" className="!mb-4">
+              <div
+                key={text.id}
+                className="shadow-lg rounded-md p-8 border"
+              >
+                <Typography
+                  variant="h5"
+                  align="center"
+                  className="!mb-4"
+                >
                   {project.textTitles.split(",")[index]}
                 </Typography>
-                <SampleText text={text} entities={project.entities} />
+                <SampleText
+                  text={text}
+                  entities={project.entities}
+                />
               </div>
             ))}
 
-            {!!project.hasGeneratedText && (
-              <div className="shadow-lg rounded-md p-8 border">
-                <GeneratedTexts
-                  generatedTextTitles={project.generatedTextTitles?.split(",")}
-                  generatedTexts={
-                    sample.generatedTexts?.filter(
-                      (item) => item.performerId === user.id
-                    ) || []
-                  }
-                  sampleId={sample.id}
-                />
-              </div>
-            )}
+            {!!project.hasGeneratedText &&
+              project.generatedTextTitles && (
+                <div className="shadow-lg rounded-md p-8 border">
+                  <GeneratedTexts
+                    generatedTextTitles={project.generatedTextTitles?.split(
+                      ","
+                    )}
+                    generatedTexts={
+                      sample.generatedTexts?.filter(
+                        (item) =>
+                          item.performerId === user.id
+                      ) || []
+                    }
+                    sampleId={sample.id}
+                  />
+                </div>
+              )}
           </div>
         </Container>
 

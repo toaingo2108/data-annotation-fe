@@ -10,7 +10,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Add, Edit, FilterAltRounded, Info } from "@mui/icons-material";
+import {
+  Add,
+  Edit,
+  FilterAltRounded,
+  Info,
+} from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
 import {
   useLocation,
@@ -46,7 +51,9 @@ export default function Projects() {
       })
       .catch((err) => {
         enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
+          message:
+            err.response.data.error ||
+            err.response.data.message,
           variant: "error",
         });
       })
@@ -70,7 +77,9 @@ export default function Projects() {
     <div>
       <div className="flex flex-row justify-between items-baseline">
         <Typography variant="h3">Projects</Typography>
-        {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
+        {[rolesCode.MANAGER].includes(
+          user.role?.toUpperCase()
+        ) && (
           <Button
             variant="contained"
             startIcon={<Add />}
@@ -92,15 +101,21 @@ export default function Projects() {
         <Chip
           key="type-all"
           label="All"
-          variant={activeChip === -1 ? "filled" : "outlined"}
+          variant={
+            activeChip === -1 ? "filled" : "outlined"
+          }
           onClick={() => handleFilterProjectByType()}
         />
         {projectTypes.map((type) => (
           <Chip
             key={type.id}
             label={type.name}
-            variant={activeChip === type.id ? "filled" : "outlined"}
-            onClick={() => handleFilterProjectByType(type.id)}
+            variant={
+              activeChip === type.id ? "filled" : "outlined"
+            }
+            onClick={() =>
+              handleFilterProjectByType(type.id)
+            }
           />
         ))}
       </div>
@@ -120,7 +135,6 @@ export default function Projects() {
                 cursor-pointer
                 overflow-hidden
               "
-              onClick={() => navigate("/projects/detail/" + p.id)}
             >
               <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-3">
@@ -141,7 +155,10 @@ export default function Projects() {
                   </div>
                 </div>
                 <div className="col-span-1">
-                  <Avatar variant="rounded" className="!w-16 !h-16">
+                  <Avatar
+                    variant="rounded"
+                    className="!w-16 !h-16"
+                  >
                     {p.name[0].toUpperCase()}
                   </Avatar>
                 </div>
@@ -149,21 +166,33 @@ export default function Projects() {
               <div></div>
               <hr className="my-2" />
               <div className="flex flex-row items-center gap-1">
-                <Tooltip placement="bottom" title="Info project">
+                <Tooltip
+                  placement="bottom"
+                  title="Info project"
+                >
                   <IconButton
                     variant="outlined"
                     size="small"
-                    onClick={() => navigate("/projects/detail/" + p.id)}
+                    onClick={() =>
+                      navigate("/projects/detail/" + p.id)
+                    }
                   >
                     <Info color="primary" />
                   </IconButton>
                 </Tooltip>
-                {[rolesCode.MANAGER].includes(user.role?.toUpperCase()) && (
-                  <Tooltip placement="bottom" title="Edit Project ">
+                {[rolesCode.MANAGER].includes(
+                  user.role?.toUpperCase()
+                ) && (
+                  <Tooltip
+                    placement="bottom"
+                    title="Edit Project "
+                  >
                     <IconButton
                       variant="outlined"
                       size="small"
-                      onClick={() => navigate("/projects/edit/" + p.id)}
+                      onClick={() =>
+                        navigate("/projects/edit/" + p.id)
+                      }
                     >
                       <Edit color="default" />
                     </IconButton>

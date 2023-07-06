@@ -1,14 +1,11 @@
 import {
   Button,
   FilledInput,
-  IconButton,
-  InputAdornment,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
-import { DeleteOutlineRounded } from "@mui/icons-material";
 
 export default function GeneratedTexts({
   generatedTextTitles,
@@ -16,8 +13,10 @@ export default function GeneratedTexts({
   sampleId,
 }) {
   const [texts, setTexts] = useState(
-    generatedTextTitles.map((_, index) =>
-      generatedTexts[index] ? generatedTexts[index] : { text: "" }
+    generatedTextTitles?.map((_, index) =>
+      generatedTexts[index]
+        ? generatedTexts[index]
+        : { text: "" }
     )
   );
 
@@ -44,7 +43,9 @@ export default function GeneratedTexts({
       })
       .catch((err) => {
         enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
+          message:
+            err.response.data.error ||
+            err.response.data.message,
           variant: "error",
         });
       });
@@ -58,13 +59,20 @@ export default function GeneratedTexts({
   return (
     <React.Fragment>
       <div className="flex flex-row justify-end gap-2">
-        <Button variant="contained" onClick={handleUpdateAnnotation}>
+        <Button
+          variant="contained"
+          onClick={handleUpdateAnnotation}
+        >
           Save
         </Button>
       </div>
       {generatedTextTitles?.map((title, index) => (
         <div key={`title-${index}`} className="mb-10">
-          <Typography variant="h5" align="center" className="!mb-2">
+          <Typography
+            variant="h5"
+            align="center"
+            className="!mb-2"
+          >
             {title}
           </Typography>
 
