@@ -96,7 +96,7 @@ export default function AssignedUsers({
   };
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 flex-wrap">
       {usersAssigned?.map((user) => (
         <Tooltip
           key={user.id}

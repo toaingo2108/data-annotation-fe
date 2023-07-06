@@ -36,6 +36,19 @@ class ProjectClient {
   getUnassingedUsers({ id }) {
     return axiosClient.get(`/projects/${id}/un-assignment`);
   }
+
+  importFile({ id, file }) {
+    console.log(id, file);
+    return axiosClient.post(
+      `/projects/${id}/files`,
+      {
+        file,
+      },
+      {
+        headers: { "content-type": "multipart/form-data" },
+      }
+    );
+  }
 }
 
 const projectClient = new ProjectClient();

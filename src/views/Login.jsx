@@ -13,44 +13,53 @@ import { enqueueSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 
 export default function Login() {
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [variant, setVariant] = useState("LOGIN");
   const { setToken, setUser } = useStateContext();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
+    let payload = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     };
-    setErrors(null);
-    setLoading(true);
-    authClient
-      .login(payload)
-      .then(({ data: { data } }) => {
-        setUser(data.user);
-        setToken(data.token);
-      })
-      .catch((err) => {
-        const response = err.response;
-        if (response && response.status !== 500) {
-          enqueueSnackbar(
-            response.data.error || response.data.message,
-            {
-              variant: "error",
-            }
-          );
-        } else {
-          enqueueSnackbar(err.message, {
+    if (variant !== "LOGIN") {
+      payload.name = nameRef.current.value;
+    }
+
+    try {
+      setErrors(null);
+      setLoading(true);
+      let res;
+      if (variant === "LOGIN") {
+        res = await authClient.login(payload);
+      } else {
+        res = await authClient.register(payload);
+      }
+      const { data } = await res.data;
+      setUser(data.user);
+      setToken(data.token);
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status !== 500) {
+        enqueueSnackbar(
+          response.data.error || response.data.message,
+          {
             variant: "error",
-          });
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+          }
+        );
+      } else {
+        enqueueSnackbar(err.message, {
+          variant: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,7 +70,9 @@ export default function Login() {
         className="w-96 bg-white p-9 shadow-lg"
       >
         <Typography variant="h6" align="center">
-          Login into your account
+          {variant === "LOGIN"
+            ? "Login into your account"
+            : "Create your account"}
         </Typography>
         {errors && (
           <div>
@@ -71,6 +82,18 @@ export default function Login() {
               </Alert>
             ))}
           </div>
+        )}
+        {variant !== "LOGIN" && (
+          <TextField
+            inputRef={nameRef}
+            margin="normal"
+            required
+            fullWidth
+            label="Name"
+            type="text"
+            autoComplete="name"
+            autoFocus
+          />
         )}
         <TextField
           inputRef={emailRef}
@@ -98,17 +121,28 @@ export default function Login() {
           variant="contained"
           className="!mt-6"
         >
-          Login
+          {variant === "LOGIN" ? "Login" : "Sign up"}
         </LoadingButton>
         <Typography
           variant="body2"
           align="center"
           className="!mt-4"
         >
-          Not Registered?{" "}
-          <Link to="#" className="text-blue-900">
-            Contact admin
-          </Link>
+          {variant === "LOGIN"
+            ? "Not Registered?"
+            : "Already have an account."}{" "}
+          <Button
+            className="text-blue-900"
+            onClick={() =>
+              setVariant(
+                variant === "LOGIN" ? "REGISTER" : "LOGIN"
+              )
+            }
+          >
+            {variant === "LOGIN"
+              ? "Create an account"
+              : "Login"}
+          </Button>
         </Typography>
       </Box>
     </div>

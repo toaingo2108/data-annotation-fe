@@ -8,6 +8,7 @@ import {
   Button,
   Chip,
   Drawer,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,6 +18,7 @@ import { rolesCode } from "../../utils/roles";
 import {
   Add,
   DeleteForeverRounded,
+  UploadFileRounded,
 } from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";
@@ -41,6 +43,7 @@ export default function ProjectDetail() {
   const [openSample, setOpenSample] = useState(false);
   const [sampleChose, setSampleChose] = useState({});
   const [projectName, setProjectName] = useState("");
+  const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
   const actions = [
@@ -98,34 +101,38 @@ export default function ProjectDetail() {
     setSampleTexts([...sampleTexts]);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      projectId: project.id,
-      sampleTexts,
-    };
     setLoadingCreateSample(true);
-    sampleClient
-      .create(payload)
-      .then((data) => {
-        enqueueSnackbar({
-          message: "Created Sample Successfully!",
-          variant: "success",
+    try {
+      if (!file) {
+        await sampleClient.create({
+          projectId: project.id,
+          sampleTexts,
         });
-      })
-      .catch((err) => {
-        enqueueSnackbar({
-          message:
-            err.response.data.error ||
-            err.response.data.message,
-          variant: "error",
+      } else {
+        await projectClient.importFile({
+          id: project.id,
+          file,
         });
-      })
-      .finally(() => {
-        setLoadingCreateSample(false);
-        setOpenCreateSampleDrawer(false);
-        collectData();
+      }
+      enqueueSnackbar({
+        message: "Created Sample Successfully!",
+        variant: "success",
       });
+    } catch (err) {
+      enqueueSnackbar({
+        message:
+          err.response.data.error ||
+          err.response.data.message,
+        variant: "error",
+      });
+    } finally {
+      setLoadingCreateSample(false);
+      setOpenCreateSampleDrawer(false);
+      collectData();
+      setFile(null);
+    }
   };
 
   const handleDelete = (e) => {
@@ -166,6 +173,10 @@ export default function ProjectDetail() {
     setSampleChose({});
   };
 
+  const handleUploadFile = (e) => {
+    setFile(e.target.files[0]);
+  };
+
   return (
     <div>
       <div className="flex flex-col">
@@ -191,7 +202,7 @@ export default function ProjectDetail() {
           {project.labelSets?.map((item, index) => (
             <div
               key={`labelSet ${index} ${item.id}`}
-              className="flex flex-row gap-1"
+              className="flex flex-row flex-wrap gap-1"
             >
               {item.labels.map((label) => (
                 <Chip
@@ -209,7 +220,7 @@ export default function ProjectDetail() {
       )}
       {!!project.entities?.length && (
         <React.Fragment>
-          <div className="flex flex-row gap-2 items-center mt-4">
+          <div className="flex flex-row flex-wrap gap-2 items-center mt-4">
             <div>Entity: </div>
             {project.entities?.map((item, index) => (
               <Chip
@@ -223,7 +234,7 @@ export default function ProjectDetail() {
           <hr className="w-2/5 mt-2" />
         </React.Fragment>
       )}
-      <div className="mt-8 flex flex-row gap-4">
+      <div className="mt-8 flex flex-row flex-wrap gap-4 items-center">
         {project.samples?.map((s) => (
           <div
             key={`sample - ${s.id}`}
@@ -265,9 +276,16 @@ export default function ProjectDetail() {
                     rows={4}
                     multiline
                     margin="dense"
+                    disabled={loadingCreateSample || !!file}
                   />
                 ))}
               </div>
+              <hr className="my-8" />
+              <input
+                type="file"
+                onChange={handleUploadFile}
+                accept=".csv"
+              />
             </div>
             <div className="flex flex-row items-center gap-2">
               <LoadingButton
