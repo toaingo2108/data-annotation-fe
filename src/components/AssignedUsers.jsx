@@ -23,10 +23,17 @@ import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import CustomNoRows from "./CustomNoRows";
 
-export default function AssignedUsers({ projectId, assignedUsers }) {
+export default function AssignedUsers({
+  projectId,
+  assignedUsers,
+}) {
   console.log(assignedUsers);
   const { setLoading } = useStateContext();
-  const [unassignedUsers, setUnassignedUsers] = useState([]);
+  const [unassignedUsers, setUnassignedUsers] = useState(
+    []
+  );
+  const [usersAssigned, setUsersAssigned] =
+    useState(assignedUsers);
   const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
@@ -53,25 +60,32 @@ export default function AssignedUsers({ projectId, assignedUsers }) {
     }, 300);
   };
 
-  const handleAssignUser = (userId) => {
+  console.log(unassignedUsers);
+
+  const handleAssignUser = (userId, index) => {
     console.log(userId);
     projectClient
-      .assignUserToProject({ id: projectId, userIds: [userId] })
+      .assignUserToProject({
+        id: projectId,
+        userIds: [userId],
+      })
       .then(() => {
         enqueueSnackbar({
           message: "Updated successfully!",
           variant: "success",
         });
+        usersAssigned.push(unassignedUsers[index]);
       })
       .catch((err) => {
         enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
+          message:
+            err.response.data.error ||
+            err.response.data.message,
           variant: "error",
         });
       })
       .finally(() => {
         handleClose();
-        navigate(0);
       });
   };
 
@@ -115,18 +129,24 @@ export default function AssignedUsers({ projectId, assignedUsers }) {
       >
         <List sx={{ width: 320 }}>
           {unassignedUsers.length ? (
-            unassignedUsers.map((user) => (
+            unassignedUsers.map((user, index) => (
               <ListItemButton
                 key={user.id}
-                onClick={() => handleAssignUser(user.id)}
+                onClick={() =>
+                  handleAssignUser(user.id, index)
+                }
               >
                 <ListItemAvatar>
                   <Avatar {...stringAvatar(user.name)}>
                     <PersonRounded />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={user.email} />
-                {user.role.toUpperCase() === rolesCode.MANAGER && (
+                <ListItemText
+                  primary={user.name}
+                  secondary={user.email}
+                />
+                {user.role.toUpperCase() ===
+                  rolesCode.MANAGER && (
                   <AdminPanelSettingsRounded />
                 )}
               </ListItemButton>
