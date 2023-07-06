@@ -92,7 +92,6 @@ export default function ProjectDetail() {
     sampleTexts[index].text = e.target.value;
     setSampleTexts([...sampleTexts]);
   };
-  console.log({ project });
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -153,34 +152,44 @@ export default function ProjectDetail() {
         )}
       </div>
       <hr className="my-4" />
-      <div className="flex flex-col gap-2">
-        {project.labelSets?.map((item, index) => (
-          <div
-            key={`labelSet ${index} ${item.id}`}
-            className="flex flex-row gap-1"
-          >
-            {item.labels.map((label) => (
+      {!!project.labelSets?.length && (
+        <div className="flex flex-col gap-2">
+          <div>Lable sets: </div>
+          {project.labelSets?.map((item, index) => (
+            <div
+              key={`labelSet ${index} ${item.id}`}
+              className="flex flex-row gap-1"
+            >
+              {item.labels.map((label) => (
+                <Chip
+                  key={`label ${label.id}`}
+                  label={label.label}
+                  variant={
+                    item.pickOne ? "outlined" : "filled"
+                  }
+                />
+              ))}
+            </div>
+          ))}
+          <hr className="w-2/5" />
+        </div>
+      )}
+      {!!project.entities?.length && (
+        <React.Fragment>
+          <div className="flex flex-row gap-2 items-center mt-4">
+            <div>Entity: </div>
+            {project.entities?.map((item, index) => (
               <Chip
-                key={`label ${label.id}`}
-                label={label.label}
-                variant={
-                  item.pickOne ? "outlined" : "filled"
-                }
+                key={`entity ${index} ${item.id}`}
+                label={item.name}
+                variant="filled"
+                color={colors[index % 6]}
               />
             ))}
           </div>
-        ))}
-      </div>
-      <div className="flex flex-row gap-2 mt-4">
-        {project.entities?.map((item, index) => (
-          <Chip
-            key={`entity ${index} ${item.id}`}
-            label={item.name}
-            variant="filled"
-            color={colors[index % 6]}
-          />
-        ))}
-      </div>
+          <hr className="w-2/5 mt-2" />
+        </React.Fragment>
+      )}
       <div className="mt-8 flex flex-row gap-4">
         {project.samples?.map((s) => (
           <div

@@ -56,7 +56,9 @@ export default function ProjectForm() {
   const collectData = () => {
     setLoading(true);
     let requests = [projectTypeClient.getAll()];
-    if (id) requests.push(projectClient.getProjectById({ id }));
+    if (id) {
+      requests.push(projectClient.getProjectById({ id }));
+    }
     Promise.all(requests)
       .then((values) => {
         setProjectTypes(values[0].data.projectTypes);
@@ -80,7 +82,8 @@ export default function ProjectForm() {
     pickOne: false,
     labels: "",
   };
-  const [labelSetNew, setLabelSetNew] = useState(initLabelSetNew);
+  const [labelSetNew, setLabelSetNew] =
+    useState(initLabelSetNew);
 
   const [entityNew, setEntityNew] = useState("");
 
@@ -103,7 +106,10 @@ export default function ProjectForm() {
       case "hasLabelSets":
       case "hasEntityRecognition":
       case "hasGeneratedText":
-        return setProject({ ...project, [name]: e.target.checked });
+        return setProject({
+          ...project,
+          [name]: e.target.checked,
+        });
       default:
         break;
     }
@@ -116,7 +122,10 @@ export default function ProjectForm() {
     let value = e.target.value;
     switch (name) {
       case "pickOne":
-        return setLabelSetNew({ ...labelSetNew, [name]: e.target.checked });
+        return setLabelSetNew({
+          ...labelSetNew,
+          [name]: e.target.checked,
+        });
       default:
         break;
     }
@@ -169,7 +178,9 @@ export default function ProjectForm() {
         })
         .catch((err) => {
           enqueueSnackbar({
-            message: err.response.data.error || err.response.data.message,
+            message:
+              err.response.data.error ||
+              err.response.data.message,
             variant: "error",
           });
         });
@@ -185,14 +196,21 @@ export default function ProjectForm() {
         })
         .catch((err) => {
           enqueueSnackbar({
-            message: err.response.data.error || err.response.data.message,
+            message:
+              err.response.data.error ||
+              err.response.data.message,
             variant: "error",
           });
         });
     }
   };
 
-  if (![rolesCode.MANAGER].includes(user.role?.toUpperCase()) || !project) {
+  if (
+    ![rolesCode.MANAGER].includes(
+      user.role?.toUpperCase()
+    ) ||
+    !project
+  ) {
     return <NotFound />;
   }
 
@@ -201,7 +219,11 @@ export default function ProjectForm() {
       <Typography variant="h3">
         {!!id ? "Update Project" : "New Project"}
       </Typography>
-      <Box component="form" className="mt-4" onSubmit={onSubmit}>
+      <Box
+        component="form"
+        className="mt-4"
+        onSubmit={onSubmit}
+      >
         <div className="flex flex-col">
           <TextField
             value={project.name}
@@ -281,7 +303,10 @@ export default function ProjectForm() {
                 onChange={handleChangeProject}
               >
                 {projectTypes.map((type) => (
-                  <MenuItem key={`project-type-${type.id}`} value={type.id}>
+                  <MenuItem
+                    key={`project-type-${type.id}`}
+                    value={type.id}
+                  >
                     {type.name}
                   </MenuItem>
                 ))}
@@ -299,54 +324,62 @@ export default function ProjectForm() {
               />
               {!!project.hasLabelSets && (
                 <div className="flex-1 flex flex-col gap-2">
-                  {project.labelSets.map((labelSet, index) => (
-                    <React.Fragment key={`label ${index}`}>
-                      <div className="grid grid-cols-3 items-center gap-2">
-                        <FormControlLabel
-                          className="flex-1"
-                          checked={!!labelSet.pickOne}
-                          control={<Checkbox />}
-                          label="Pick one"
-                          disabled
-                        />
-                        <TextField
-                          className="col-span-2"
-                          value={
-                            !project.id
-                              ? labelSet.labels.join(",")
-                              : labelSet.labels
-                                  .map((label) => label.label)
-                                  .join(",")
-                          }
-                          label="Labels"
-                          size="small"
-                          required
-                          margin="normal"
-                          fullWidth
-                          disabled
-                          InputProps={
-                            !project.id
-                              ? {
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      <IconButton
-                                        size="small"
-                                        onClick={() =>
-                                          handleClearLabelSet(index)
-                                        }
-                                      >
-                                        <Clear />
-                                      </IconButton>
-                                    </InputAdornment>
-                                  ),
-                                }
-                              : {}
-                          }
-                        />
-                      </div>
-                      <hr />
-                    </React.Fragment>
-                  ))}
+                  {project.labelSets.map(
+                    (labelSet, index) => (
+                      <React.Fragment
+                        key={`label ${index}`}
+                      >
+                        <div className="grid grid-cols-3 items-center gap-2">
+                          <FormControlLabel
+                            className="flex-1"
+                            checked={!!labelSet.pickOne}
+                            control={<Checkbox />}
+                            label="Pick one"
+                            disabled
+                          />
+                          <TextField
+                            className="col-span-2"
+                            value={
+                              !project.id
+                                ? labelSet.labels.join(",")
+                                : labelSet.labels
+                                    .map(
+                                      (label) => label.label
+                                    )
+                                    .join(",")
+                            }
+                            label="Labels"
+                            size="small"
+                            required
+                            margin="normal"
+                            fullWidth
+                            disabled
+                            InputProps={
+                              !project.id
+                                ? {
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          size="small"
+                                          onClick={() =>
+                                            handleClearLabelSet(
+                                              index
+                                            )
+                                          }
+                                        >
+                                          <Clear />
+                                        </IconButton>
+                                      </InputAdornment>
+                                    ),
+                                  }
+                                : {}
+                            }
+                          />
+                        </div>
+                        <hr />
+                      </React.Fragment>
+                    )
+                  )}
                   {!project.id && (
                     <div className="grid grid-cols-3 items-center gap-2">
                       <FormControlLabel
@@ -371,7 +404,9 @@ export default function ProjectForm() {
                             <InputAdornment position="end">
                               <IconButton
                                 size="small"
-                                onClick={() => handleAddNewLabelSet()}
+                                onClick={() =>
+                                  handleAddNewLabelSet()
+                                }
                               >
                                 <Add />
                               </IconButton>
@@ -397,17 +432,22 @@ export default function ProjectForm() {
               {!!project.hasEntityRecognition && (
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-row gap-2 flex-wrap">
-                    {project.entities?.map((entity, index) => (
-                      <Chip
-                        key={`entity ${index}`}
-                        label={entity.name}
-                        onDelete={() => {
-                          project.entities.splice(index, 1);
-                          setProject({ ...project });
-                        }}
-                        color={colors[index % 6]}
-                      />
-                    ))}
+                    {project.entities?.map(
+                      (entity, index) => (
+                        <Chip
+                          key={`entity ${index}`}
+                          label={entity.name}
+                          onDelete={() => {
+                            project.entities.splice(
+                              index,
+                              1
+                            );
+                            setProject({ ...project });
+                          }}
+                          color={colors[index % 6]}
+                        />
+                      )
+                    )}
                   </div>
                   {!project.id && (
                     <>
@@ -419,16 +459,24 @@ export default function ProjectForm() {
                           margin="normal"
                           size="small"
                           fullWidth
-                          onChange={(e) => setEntityNew(e.target.value)}
+                          onChange={(e) =>
+                            setEntityNew(e.target.value)
+                          }
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
                                 <IconButton
-                                  disabled={entityNew === ""}
+                                  disabled={
+                                    entityNew === ""
+                                  }
                                   size="small"
                                   onClick={() => {
-                                    project.entities.push({ name: entityNew });
-                                    setProject({ ...project });
+                                    project.entities.push({
+                                      name: entityNew,
+                                    });
+                                    setProject({
+                                      ...project,
+                                    });
                                     setEntityNew("");
                                   }}
                                 >

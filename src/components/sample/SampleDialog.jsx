@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import { Check, Close } from "@mui/icons-material";
 import {
   AppBar,
   Chip,
@@ -18,6 +18,7 @@ import sampleClient from "../../clients/sampleClient";
 import GeneratedTexts from "./GeneratedTexts";
 import { useStateContext } from "../../context/ContextProvider";
 import Transition from "../Transition";
+import { enqueueSnackbar } from "notistack";
 
 export default function SampleDialog({
   isOpen,
@@ -28,6 +29,7 @@ export default function SampleDialog({
   const { user, loading, setLoading } = useStateContext();
   const [open, setOpen] = useState(isOpen);
   const [sample, setSample] = useState({});
+  const [lableSetPicked, setLableSetPicked] = useState([]);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -42,10 +44,12 @@ export default function SampleDialog({
     sampleClient
       .getById({
         id: sampleChose.id,
+        withLabelSets: true,
         withEntities: true,
         withGeneratedTexts: true,
       })
       .then(({ data }) => {
+        setLableSetPicked(data.labelSets);
         setSample(data.sample);
       })
       .finally(() => {
@@ -59,6 +63,57 @@ export default function SampleDialog({
       onClose();
     }, 300);
   }, [onClose]);
+
+  const handlePickLableSet = (
+    lableSetIndex,
+    isPickOne,
+    labelIndex,
+    isPicked
+  ) => {
+    if (isPickOne) {
+      lableSetPicked[lableSetIndex].labels = lableSetPicked[
+        lableSetIndex
+      ].labels.map((label, idx) => {
+        return {
+          ...label,
+          picked: idx === labelIndex,
+        };
+      });
+    } else {
+      lableSetPicked[lableSetIndex].labels[
+        labelIndex
+      ].picked = !isPicked;
+    }
+
+    let labeling = {};
+
+    lableSetPicked.forEach((item) => {
+      labeling[item.id] = item.labels
+        .filter((label) => label.picked)
+        .map((item) => item.id);
+    });
+
+    sampleClient
+      .addAnnotation({
+        id: sample.id,
+        labeling,
+      })
+      .then((data) => {
+        enqueueSnackbar({
+          message: "Updated suscessfully!",
+          variant: "success",
+        });
+        setLableSetPicked([...lableSetPicked]);
+      })
+      .catch((err) => {
+        enqueueSnackbar({
+          message:
+            err.response.data.error ||
+            err.response.data.message,
+          variant: "error",
+        });
+      });
+  };
 
   if (loading) return;
 
@@ -97,6 +152,44 @@ export default function SampleDialog({
           </Toolbar>
         </AppBar>
         <Container className="my-8 pb-40">
+          {!!lableSetPicked?.length && (
+            <div className="flex flex-col gap-2 mb-8">
+              {lableSetPicked?.map((item, index) => (
+                <div
+                  key={`labelSet ${index} ${item.id}`}
+                  className="flex flex-row gap-1 items-center"
+                >
+                  <span className="w-20">
+                    {item.pickOne
+                      ? "Pick one"
+                      : "Pick multi"}
+                    :
+                  </span>
+                  {item.labels.map((label, labelIndex) => (
+                    <Chip
+                      icon={label.picked ? <Check /> : ""}
+                      key={`label ${label.id}`}
+                      label={label.label}
+                      variant={
+                        item.pickOne ? "outlined" : "filled"
+                      }
+                      color={
+                        label.picked ? "success" : "default"
+                      }
+                      onClick={() =>
+                        handlePickLableSet(
+                          index,
+                          item.pickOne,
+                          labelIndex,
+                          label.picked
+                        )
+                      }
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="flex flex-col gap-8 relative">
             {sample.sampleTexts?.map((text, index) => (
               <div

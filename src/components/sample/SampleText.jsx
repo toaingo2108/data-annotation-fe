@@ -17,14 +17,19 @@ export default function SampleText({ text, entities }) {
   const [state, setState] = useState({
     value:
       text?.entities
-        ?.filter((entity) => entity.pivot.performerId === user.id)
+        ?.filter(
+          (entity) => entity.pivot.performerId === user.id
+        )
         ?.map((entity) => ({
           start: entity.pivot.start,
           end: entity.pivot.end,
           tag: entity.name,
           tokens: text.text
             .split(" ")
-            .splice(entity.pivot.start, entity.pivot.end - entity.pivot.start),
+            .splice(
+              entity.pivot.start,
+              entity.pivot.end - entity.pivot.start
+            ),
         })) || [],
     tag: entities?.[0]?.name,
   });
@@ -42,9 +47,13 @@ export default function SampleText({ text, entities }) {
       entities?.reduce(
         (item, value, index) => ({
           ...item,
-          [value.name]: ["#00ffa2", "#ff8e84", "#ff84fb", "#84d2ff", "#efff84"][
-            index
-          ],
+          [value.name]: [
+            "#00ffa2",
+            "#ff8e84",
+            "#ff84fb",
+            "#84d2ff",
+            "#efff84",
+          ][index],
         }),
         {}
       ),
@@ -54,7 +63,9 @@ export default function SampleText({ text, entities }) {
   const handleSaveAnnotation = () => {
     const payload = state.value.map((value) => ({
       sampleTextId: text.id,
-      entityId: entities.find((entity) => entity.name === value.tag)?.id,
+      entityId: entities.find(
+        (entity) => entity.name === value.tag
+      )?.id,
       start: value.start,
       end: value.end,
     }));
@@ -72,7 +83,9 @@ export default function SampleText({ text, entities }) {
       .catch((err) => {
         console.log(err);
         enqueueSnackbar({
-          message: err.response.data.error || err.response.data.message,
+          message:
+            err.response.data.error ||
+            err.response.data.message,
           variant: "error",
         });
       });
@@ -84,7 +97,9 @@ export default function SampleText({ text, entities }) {
         {!!entities?.length && (
           <>
             <FormControl size="small" className="w-60">
-              <InputLabel id={`select-label${text.id}`}>Label</InputLabel>
+              <InputLabel id={`select-label${text.id}`}>
+                Label
+              </InputLabel>
               <Select
                 labelId={`select-label${text.id}`}
                 value={state.tag}
@@ -92,7 +107,10 @@ export default function SampleText({ text, entities }) {
                 onChange={handleTagChange}
               >
                 {entities?.map((entity, index) => (
-                  <MenuItem key={entity.id} value={entity.name}>
+                  <MenuItem
+                    key={entity.id}
+                    value={entity.name}
+                  >
                     {entity.name}
                   </MenuItem>
                 ))}
@@ -111,7 +129,7 @@ export default function SampleText({ text, entities }) {
       <TokenAnnotator
         className="mt-4"
         style={{
-          maxWidth: 500,
+          maxWidth: "100%",
           lineHeight: 1.5,
         }}
         tokens={text.text.split(" ")}
