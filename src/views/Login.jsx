@@ -1,4 +1,10 @@
-import { Alert, Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import authClient from "../clients/authClient";
@@ -30,9 +36,12 @@ export default function Login() {
       .catch((err) => {
         const response = err.response;
         if (response && response.status !== 500) {
-          enqueueSnackbar(response.data.error || response.data.message, {
-            variant: "error",
-          });
+          enqueueSnackbar(
+            response.data.error || response.data.message,
+            {
+              variant: "error",
+            }
+          );
         } else {
           enqueueSnackbar(err.message, {
             variant: "error",
@@ -91,10 +100,14 @@ export default function Login() {
         >
           Login
         </LoadingButton>
-        <Typography variant="body2" align="center" className="!mt-4">
+        <Typography
+          variant="body2"
+          align="center"
+          className="!mt-4"
+        >
           Not Registered?{" "}
-          <Link to="/signup" className="text-blue-900">
-            Create an account
+          <Link to="#" className="text-blue-900">
+            Contact admin
           </Link>
         </Typography>
       </Box>

@@ -1,4 +1,7 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  createBrowserRouter,
+} from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import NotFound from "./views/NotFound";
@@ -19,7 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/projects" />,
+        element: <Projects />,
       },
       {
         path: "/users",
@@ -29,10 +32,7 @@ const router = createBrowserRouter([
         path: "/users/new",
         element: <UserForm key="Create user" />,
       },
-      {
-        path: "/projects",
-        element: <Projects />,
-      },
+
       {
         path: "/projects/new",
         element: <ProjectForm key="create-project" />,
