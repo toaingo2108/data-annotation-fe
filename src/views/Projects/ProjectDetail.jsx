@@ -143,7 +143,7 @@ export default function ProjectDetail() {
         >
           {project.name}
         </Typography>
-        {user.role === rolesCode.MANAGER && (
+        {user.role.toUpperCase() === rolesCode.MANAGER && (
           <div className="mt-4">
             <AssignedUsers
               projectId={project.id}
