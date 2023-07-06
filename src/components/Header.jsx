@@ -35,7 +35,7 @@ import { useNavigate } from "react-router-dom";
 const menu = [
   {
     title: "Projects",
-    url: "/projects",
+    url: "/",
     icon: <Work />,
   },
   {
@@ -57,12 +57,17 @@ export default function Header() {
   const navigate = useNavigate();
 
   // states
-  const { user, setUser, setToken, loading } = useStateContext();
+  const { user, setUser, setToken, loading } =
+    useStateContext();
   const [anchorEl, setAnchorEl] = useState();
-  const [openMenuDrawer, setOpenMenuDrawer] = useState(false);
+  const [openMenuDrawer, setOpenMenuDrawer] =
+    useState(false);
 
   const findUserRole = useMemo(
-    () => rolesUser.find((role) => role.name === user.role?.toUpperCase()),
+    () =>
+      rolesUser.find(
+        (role) => role.name === user.role?.toUpperCase()
+      ),
     [user]
   );
 
@@ -97,11 +102,17 @@ export default function Header() {
         {menu
           .filter(
             (item) =>
-              !item.forRoles || item.forRoles.includes(user.role?.toUpperCase())
+              !item.forRoles ||
+              item.forRoles.includes(
+                user.role?.toUpperCase()
+              )
           )
           .map((item, index) => (
             <React.Fragment key={item.title}>
-              <ListItem disablePadding onClick={() => navigate(item.url)}>
+              <ListItem
+                disablePadding
+                onClick={() => navigate(item.url)}
+              >
                 <ListItemButton>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.title} />
@@ -136,11 +147,18 @@ export default function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          >
             Data Annotation
           </Typography>
           {findUserRole && (
-            <Chip color={findUserRole?.colorChip} label={findUserRole?.name} />
+            <Chip
+              color={findUserRole?.colorChip}
+              label={findUserRole?.name}
+            />
           )}
           <div className="px-2">{user.name}</div>
           <div>
@@ -155,16 +173,6 @@ export default function Header() {
               className="!bg-white hover:!bg-neutral-200 !transition"
               onClick={handleMenu}
             />
-            {/* <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton> */}
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -188,7 +196,10 @@ export default function Header() {
               >
                 My profile
               </MenuItem>
-              <MenuItem className="!text-red-600" onClick={() => onLogout()}>
+              <MenuItem
+                className="!text-red-600"
+                onClick={() => onLogout()}
+              >
                 Logout
               </MenuItem>
             </Menu>
