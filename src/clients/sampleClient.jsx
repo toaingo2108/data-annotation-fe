@@ -9,12 +9,19 @@ class SampleClient {
     return axiosClient.post("/samples", payload);
   }
 
-  getById({ id, withLabelSets, withEntities, withGeneratedTexts }) {
+  getById({
+    id,
+    withLabelSets,
+    withEntities,
+    withGeneratedTexts,
+    performerId,
+  }) {
     return axiosClient.get(`/samples/${id}`, {
       params: {
         withLabelSets,
         withEntities,
         withGeneratedTexts,
+        performerId,
       },
     });
   }
@@ -29,11 +36,18 @@ class SampleClient {
     return axiosClient.delete(`/samples/${id}`);
   }
 
-  addAnnotation({ id, entityRecognition, generated_texts, labeling }) {
+  addAnnotation({
+    id,
+    entityRecognition,
+    generated_texts,
+    labeling,
+    userId,
+  }) {
     return axiosClient.post(`/samples/${id}/annotation`, {
       entityRecognition,
       generated_texts,
       labeling,
+      userId,
     });
   }
 }

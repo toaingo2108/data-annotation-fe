@@ -38,7 +38,6 @@ class ProjectClient {
   }
 
   importFile({ id, file }) {
-    console.log(id, file);
     return axiosClient.post(
       `/projects/${id}/files`,
       {

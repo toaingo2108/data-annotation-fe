@@ -4,9 +4,7 @@ import {
   Avatar,
   Button,
   Chip,
-  CircularProgress,
   IconButton,
-  LinearProgress,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -17,12 +15,7 @@ import {
   Info,
 } from "@mui/icons-material";
 import { useStateContext } from "../../context/ContextProvider";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { rolesCode } from "../../utils/roles";
 import projectTypeClient from "../../clients/projectTypeClient";
 import { enqueueSnackbar } from "notistack";

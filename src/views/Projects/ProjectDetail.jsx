@@ -8,7 +8,6 @@ import {
   Button,
   Chip,
   Drawer,
-  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,7 +17,6 @@ import { rolesCode } from "../../utils/roles";
 import {
   Add,
   DeleteForeverRounded,
-  UploadFileRounded,
 } from "@mui/icons-material";
 import MySpeedDial from "../../components/speed-dial";
 import sampleClient from "../../clients/sampleClient";

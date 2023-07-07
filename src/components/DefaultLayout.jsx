@@ -21,7 +21,6 @@ export default function DefaultLayout() {
         setUser(data);
       })
       .catch((err) => {
-        console.log(err.message);
         enqueueSnackbar(err.message, { variant: "error" });
         setToken(null);
         setUser({});

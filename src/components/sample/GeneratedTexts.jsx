@@ -26,10 +26,6 @@ export default function GeneratedTexts({
   };
 
   const handleUpdateAnnotation = () => {
-    // console.log({
-    //   id: sampleId,
-    //   generated_texts: texts.map((text) => text.text),
-    // });
     sampleClient
       .addAnnotation({
         id: sampleId,

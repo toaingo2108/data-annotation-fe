@@ -29,6 +29,8 @@ import CustomNoRows from "./CustomNoRows";
 export default function AssignedUsers({
   projectId,
   assignedUsers,
+  isViewAnnotate,
+  setViewPerformer,
 }) {
   const { setLoading } = useStateContext();
   const [unassignedUsers, setUnassignedUsers] = useState(
@@ -95,6 +97,13 @@ export default function AssignedUsers({
       });
   };
 
+  const handleViewAnnotateUser = useCallback(
+    (user) => {
+      setViewPerformer(user);
+    },
+    [setViewPerformer]
+  );
+
   return (
     <div className="flex flex-row gap-2 flex-wrap">
       {usersAssigned?.map((user) => (
@@ -113,20 +122,26 @@ export default function AssignedUsers({
               height: 30,
               fontSize: 12,
               bgcolor: stringToColor(user.name),
+              cursor: isViewAnnotate
+                ? "pointer"
+                : "default",
             }}
+            onClick={() => handleViewAnnotateUser(user)}
           >
             {stringAvatar(user.name).children}
           </Avatar>
         </Tooltip>
       ))}
-      <Tooltip key="add" title={"Add user"}>
-        <IconButton
-          onClick={() => handleOpenAssignUser(projectId)}
-          sx={{ width: 30, height: 30, fontSize: 16 }}
-        >
-          <PersonAddAltRounded />
-        </IconButton>
-      </Tooltip>
+      {!isViewAnnotate && (
+        <Tooltip key="add" title={"Add user"}>
+          <IconButton
+            onClick={() => handleOpenAssignUser(projectId)}
+            sx={{ width: 30, height: 30, fontSize: 16 }}
+          >
+            <PersonAddAltRounded />
+          </IconButton>
+        </Tooltip>
+      )}
 
       <Dialog
         open={openDialog}

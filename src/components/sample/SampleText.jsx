@@ -10,15 +10,18 @@ import React, { useMemo, useState } from "react";
 import { TokenAnnotator } from "react-text-annotate";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
-import { useStateContext } from "../../context/ContextProvider";
 
-export default function SampleText({ text, entities }) {
-  const { user } = useStateContext();
+export default function SampleText({
+  text,
+  entities,
+  performerId,
+}) {
   const [state, setState] = useState({
     value:
       text?.entities
         ?.filter(
-          (entity) => entity.pivot.performerId === user.id
+          (entity) =>
+            entity.pivot.performerId === performerId
         )
         ?.map((entity) => ({
           start: entity.pivot.start,
@@ -69,6 +72,7 @@ export default function SampleText({ text, entities }) {
       start: value.start,
       end: value.end,
     }));
+
     sampleClient
       .addAnnotation({
         id: text.sampleId,
@@ -81,7 +85,6 @@ export default function SampleText({ text, entities }) {
         });
       })
       .catch((err) => {
-        console.log(err);
         enqueueSnackbar({
           message:
             err.response.data.error ||

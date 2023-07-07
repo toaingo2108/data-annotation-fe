@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { rolesCode, rolesUser } from "../utils/roles";
+import { rolesUser } from "../utils/roles";
 import userClient from "../clients/userClient";
 import { enqueueSnackbar } from "notistack";
 
@@ -29,25 +29,29 @@ export default function UserForm() {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    console.log(user);
-
     userClient
       .storeUser(user)
       .then((res) => {
-        console.log(res);
         setUser({ ...user, ...initUser });
-        enqueueSnackbar("Created User Succeedfully!", { variant: "success" });
+        enqueueSnackbar("Created User Succeedfully!", {
+          variant: "success",
+        });
       })
       .catch((err) => {
-        console.log(err);
-        enqueueSnackbar(err.response.data.message, { variant: "error" });
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
       });
   };
 
   return (
     <div>
       <Typography variant="h4">New User</Typography>
-      <Box component="form" className="mt-4" onSubmit={onSubmit}>
+      <Box
+        component="form"
+        className="mt-4"
+        onSubmit={onSubmit}
+      >
         <div className="flex flex-col">
           <TextField
             value={user.name}
@@ -79,8 +83,14 @@ export default function UserForm() {
             required
             onChange={handleChangeUser}
           />
-          <FormControl fullWidth margin="normal" size="small">
-            <InputLabel id="role-user-select-label">Role</InputLabel>
+          <FormControl
+            fullWidth
+            margin="normal"
+            size="small"
+          >
+            <InputLabel id="role-user-select-label">
+              Role
+            </InputLabel>
             <Select
               labelId="role-user-select-label"
               value={user.role}
@@ -97,7 +107,11 @@ export default function UserForm() {
               ))}
             </Select>
           </FormControl>
-          <Button type="submit" variant="contained" className="!mt-6">
+          <Button
+            type="submit"
+            variant="contained"
+            className="!mt-6"
+          >
             Create
           </Button>
         </div>
