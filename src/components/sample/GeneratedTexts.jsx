@@ -11,6 +11,7 @@ export default function GeneratedTexts({
   generatedTextTitles,
   generatedTexts,
   sampleId,
+  performerId,
 }) {
   const [texts, setTexts] = useState(
     generatedTextTitles?.map((_, index) =>
@@ -30,6 +31,7 @@ export default function GeneratedTexts({
       .addAnnotation({
         id: sampleId,
         generated_texts: texts.map((text) => text.text),
+        userId: performerId,
       })
       .then(() => {
         enqueueSnackbar({

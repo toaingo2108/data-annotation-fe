@@ -109,6 +109,7 @@ export default function SampleDialog({
       .addAnnotation({
         id: sample.id,
         labeling,
+        userId: viewPerformer.id || user.id,
       })
       .then((data) => {
         enqueueSnackbar({
@@ -287,6 +288,9 @@ export default function SampleDialog({
                         ) || []
                       }
                       sampleId={sample.id}
+                      performerId={
+                        viewPerformer.id || user.id
+                      }
                     />
                   </div>
                 )}

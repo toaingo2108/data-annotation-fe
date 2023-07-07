@@ -10,12 +10,14 @@ import React, { useMemo, useState } from "react";
 import { TokenAnnotator } from "react-text-annotate";
 import sampleClient from "../../clients/sampleClient";
 import { enqueueSnackbar } from "notistack";
+import { useStateContext } from "../../context/ContextProvider";
 
 export default function SampleText({
   text,
   entities,
   performerId,
 }) {
+  const { user } = useStateContext();
   const [state, setState] = useState({
     value:
       text?.entities
@@ -77,6 +79,7 @@ export default function SampleText({
       .addAnnotation({
         id: text.sampleId,
         entityRecognition: payload,
+        userId: performerId,
       })
       .then((data) => {
         enqueueSnackbar({
