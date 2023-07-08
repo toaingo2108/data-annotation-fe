@@ -59,7 +59,9 @@ export default function ProjectDetail() {
       ),
       name: "Delete Project",
       onClick: () => setOpenDeleteProject(true),
-      isShow: true,
+      isShow: [rolesCode.MANAGER].includes(
+        user.role?.toUpperCase()
+      ),
     },
   ];
 
